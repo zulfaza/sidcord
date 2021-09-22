@@ -1,3 +1,3 @@
 # SidCord
 
-aplikasi jualan gitar dan alat musik lainnya
+aplikasi jualan alat musik
