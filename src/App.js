@@ -3,6 +3,7 @@ import RouteName from "./config/Route";
 import { AuthProvider } from "./contexts/AuthContext";
 import EditProfile from "./pages/Customer/EditProfile";
 import Login from "./pages/Customer/Login";
+import DetailProduct from "./pages/DetailProduct";
 import Error404 from "./pages/Error/Error404";
 import Home from "./pages/Home";
 
@@ -12,6 +13,7 @@ function App() {
       <Router>
         <Switch>
           <Route exact path={RouteName.home} component={Home} />
+          <Route exact path={"/product/guitar"} component={DetailProduct} />
           <Route
             exact
             path={"/customer/edit-profile"}
