@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import MainLayout from '../components/MainLayout'
 import { StarIcon } from '@heroicons/react/solid'
 import { RadioGroup } from '@headlessui/react'
+import { Link } from 'react-router-dom'
 
 const product = {
   name: 'Gibson Les Paul Standard \'60s Bourbon Burst',
@@ -64,13 +65,13 @@ export default function DetailProduct() {
             <div className="bg-white">
                 <div className="pt-6">
                     <nav aria-label="Breadcrumb">
-                    <ol role="list" className="max-w-2xl mx-auto px-4 flex items-center space-x-2 sm:px-6 lg:max-w-7xl lg:px-8">
+                    <ol className="max-w-2xl mx-auto px-4 flex items-center space-x-2 sm:px-6 lg:max-w-7xl lg:px-8">
                         {product.breadcrumbs.map((breadcrumb) => (
                         <li key={breadcrumb.id}>
                             <div className="flex items-center">
-                            <a href={breadcrumb.href} className="mr-2 text-sm font-medium text-gray-900">
+                            <Link to={breadcrumb.href} className="mr-2 text-sm font-medium text-gray-900">
                                 {breadcrumb.name}
-                            </a>
+                            </Link>
                             <svg
                                 width={16}
                                 height={20}
@@ -86,9 +87,9 @@ export default function DetailProduct() {
                         </li>
                         ))}
                         <li className="text-sm">
-                        <a href={product.href} aria-current="page" className="font-medium text-gray-500 hover:text-gray-600">
+                        <Link to={product.href} aria-current="page" className="font-medium text-gray-500 hover:text-gray-600">
                             {product.name}
-                        </a>
+                        </Link>
                         </li>
                     </ol>
                     </nav>
@@ -155,9 +156,9 @@ export default function DetailProduct() {
                             ))}
                             </div>
                             <p className="sr-only">{reviews.average} out of 5 stars</p>
-                            <a href={reviews.href} className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                            <Link to={reviews.href} className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">
                             {reviews.totalCount} reviews
-                            </a>
+                            </Link>
                         </div>
                         </div>
 
@@ -202,9 +203,9 @@ export default function DetailProduct() {
                         <div className="mt-10">
                             <div className="flex items-center justify-between">
                             <h3 className="text-sm text-gray-900 font-medium">Size</h3>
-                            <a href="#" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                            <Link to="#" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
                                 Size guide
-                            </a>
+                            </Link>
                             </div>
 
                             <RadioGroup value={selectedSize} onChange={setSelectedSize} className="mt-4">
@@ -283,7 +284,7 @@ export default function DetailProduct() {
                         <h3 className="text-sm font-medium text-gray-900">Highlights</h3>
 
                         <div className="mt-4">
-                            <ul role="list" className="pl-4 list-disc text-sm space-y-2">
+                            <ul className="pl-4 list-disc text-sm space-y-2">
                             {product.highlights.map((highlight) => (
                                 <li key={highlight} className="text-gray-400">
                                 <span className="text-gray-600">{highlight}</span>
