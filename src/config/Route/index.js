@@ -1,8 +1,11 @@
 const RouteName = {
-  register: "/register",
   home: "/",
   forgetPassword: "/user/forgot-password",
   editProfile: "/user/edit-profile",
+  login: "/user/login",
+  register: "/user/register",
+  sellerLogin: "/seller/login",
+  sellerRegister: "/seller/register",
   sellerForgetPassword: "/seller/forgot-password",
   sellerEditProfile: "/seller/edit-profile",
 };
