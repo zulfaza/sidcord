@@ -7,6 +7,7 @@ import DetailProduct from "./pages/DetailProduct";
 import Error404 from "./pages/Error/Error404";
 import Home from "./pages/Home";
 import DashboardSeller from "./pages/Seller/DashboardSeller"
+import EditProfileSeller from "./pages/Seller/EditProfileSeller";
 
 function App() {
   return (
@@ -20,6 +21,11 @@ function App() {
             exact
             path={"/customer/edit-profile"}
             component={EditProfile}
+          />
+           <Route
+            exact
+            path={"/seller/edit-profile-seller"}
+            component={EditProfileSeller}
           />
           <Route exact path={RouteName.login} component={Login} />
           <Route path='*' component={Error404} />
