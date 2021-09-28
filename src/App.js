@@ -6,6 +6,7 @@ import Login from "./pages/Customer/Login";
 import DetailProduct from "./pages/DetailProduct";
 import Error404 from "./pages/Error/Error404";
 import Home from "./pages/Home";
+import DashboardSeller from "./pages/Seller/DashboardSeller"
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Router>
         <Switch>
           <Route exact path={RouteName.home} component={Home} />
+          <Route exact path={"/seller/dashboard"} component={DashboardSeller} />
           <Route exact path={"/product/guitar"} component={DetailProduct} />
           <Route
             exact
