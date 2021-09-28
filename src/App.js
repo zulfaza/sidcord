@@ -7,6 +7,8 @@ import DetailProduct from "./pages/DetailProduct";
 import Error404 from "./pages/Error/Error404";
 import Home from "./pages/Home";
 import AddProduct from "./pages/Seller/AddProduct";
+import DashboardSeller from "./pages/Seller/DashboardSeller"
+import EditProfileSeller from "./pages/Seller/EditProfileSeller";
 
 function App() {
   return (
@@ -15,11 +17,17 @@ function App() {
         <Switch>
           <Route exact path={RouteName.home} component={Home} />
           <Route exact path={"/seller/addproduct"} component={AddProduct} />
+          <Route exact path={"/seller/dashboard"} component={DashboardSeller} />
           <Route exact path={"/product/guitar"} component={DetailProduct} />
           <Route
             exact
             path={"/customer/edit-profile"}
             component={EditProfile}
+          />
+           <Route
+            exact
+            path={"/seller/edit-profile-seller"}
+            component={EditProfileSeller}
           />
           <Route exact path={RouteName.login} component={Login} />
           <Route path='*' component={Error404} />

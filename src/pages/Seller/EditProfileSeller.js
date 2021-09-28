@@ -1,13 +1,13 @@
-import React from "react";
+import react from "react";
 import { PaperClipIcon } from '@heroicons/react/solid'
 import MainLayout from "../../components/MainLayout";
 
-export default function EditProfile() {
-  return (
-    <MainLayout>
-      <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+export default function EditProfileSeller() {
+    return ( 
+        <MainLayout>
+        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
       <div className="px-4 py-5 sm:px-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-900">Edit Profile User</h3>
+        <h3 className="text-lg leading-6 font-medium text-gray-900">Edit Profile Seller</h3>
         <p className="mt-1 max-w-2xl text-sm text-gray-500">Personal details.</p>
       </div>
       <div className="border-t border-gray-200">
@@ -40,6 +40,7 @@ export default function EditProfile() {
         </dl>
       </div>
     </div>
-    </MainLayout>
-  );
+        </MainLayout>
+     );
 }
+ 
