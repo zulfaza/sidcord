@@ -3,8 +3,16 @@ import { Link } from "react-router-dom";
 import classNames from "../../utils/ClassNames";
 
 export default function UserNavLink({ item, active }) {
+  function handleOnClick(e) {
+    if (item.onClick) {
+      e.preventDefault();
+      item.onClick();
+    }
+  }
+
   return (
     <Link
+      onClick={handleOnClick}
       to={item.href}
       className={classNames(
         active ? "bg-gray-100" : "",

@@ -5,7 +5,7 @@ import InputForm from "../../components/LoginRegister/InputForm";
 import { useAuth } from "../../contexts/AuthContext";
 import { useHistory } from "react-router";
 
-export default function Login() {
+export default function LoginSeller() {
   const { signinWithEmailPassword } = useAuth();
   const [Loading, setLoading] = useState(false);
   const [Email, setEmail] = useState("");
@@ -52,7 +52,7 @@ export default function Login() {
           <p className='mt-2 text-center text-sm text-gray-600'>
             Or{" "}
             <Link
-              to={RouteName.register}
+              to={RouteName.sellerRegister}
               className='font-medium text-indigo-600 hover:text-indigo-500'
             >
               register here

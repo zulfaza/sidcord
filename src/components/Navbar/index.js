@@ -4,31 +4,45 @@ import { Disclosure } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import NavLink from "./NavLink";
 import MobileNavLink from "./MobileNavLink";
-import MobileUserNavLink from "./MobileUserNavLink";
 import ProfileDropDown from "./ProfileDropDown";
 import { Link } from "react-router-dom";
-
-const user = {
-  name: "Tom Cook",
-  email: "tom@example.com",
-  imageUrl:
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-};
-
-const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Team", href: "#", current: false },
-  { name: "Projects", href: "#", current: false },
-  { name: "Calendar", href: "#", current: false },
-  { name: "Reports", href: "#", current: false },
-];
-const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
-];
+import RouteName from "../../config/Route";
+import { useAuth } from "../../contexts/AuthContext";
+import BtnLoginRegister from "./BtnLoginRegister";
+import MobileUserWrapper from "./MobileUserWrapper";
+import MobileBtnWrapper from "./MobileBtnWrapper";
 
 export default function Navbar() {
+  const { currentUser, IsSeller, logout } = useAuth();
+  const user = {
+    name: currentUser?.displayName,
+    email: currentUser?.email,
+    imageUrl: currentUser?.photoURL,
+  };
+
+  const navigation = [];
+
+  const btnSeller = [
+    { name: "Login", href: RouteName.sellerLogin },
+    { name: "Register", href: RouteName.sellerRegister },
+  ];
+
+  const btnUser = [
+    { name: "Login", href: RouteName.login },
+    { name: "Register", href: RouteName.register },
+  ];
+
+  const userNavigation = [
+    { name: "Your Profile", href: "/customer/edit-profile" },
+    { name: "Sign out", href: "#", onClick: logout },
+  ];
+
+  const sellerNavigation = [
+    { name: "Dashboard", href: "/seller/dashboard" },
+    { name: "Your Profile", href: "/seller/edit-profile" },
+    { name: "Sign out", href: "#", onClick: logout },
+  ];
+
   return (
     <Disclosure as='nav' className='bg-gray-800'>
       {({ open }) => (
@@ -60,10 +74,27 @@ export default function Navbar() {
               </div>
               <div className='hidden md:block'>
                 <div className='ml-4 flex items-center md:ml-6'>
-                  <ProfileDropDown
-                    userNavigation={userNavigation}
-                    user={user}
-                  />
+                  {currentUser ? (
+                    <ProfileDropDown
+                      userNavigation={
+                        IsSeller ? sellerNavigation : userNavigation
+                      }
+                      user={user}
+                    />
+                  ) : (
+                    <>
+                      <BtnLoginRegister
+                        links={btnSeller}
+                        label='Seller'
+                        className='border-2 border-white text-white px-4 py-2 hover:bg-white hover:text-gray-800 transition-colors bg-gray-800 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white'
+                      />
+                      <BtnLoginRegister
+                        links={btnUser}
+                        label='Customer'
+                        className='border-2 border-white hover:text-white px-4 py-2 bg-white text-gray-800 transition-colors hover:bg-gray-800 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white'
+                      />
+                    </>
+                  )}
                 </div>
               </div>
               <div className='-mr-2 flex md:hidden'>
@@ -91,30 +122,17 @@ export default function Navbar() {
                 />
               ))}
             </div>
-            <div className='pt-4 pb-3 border-t border-gray-700'>
-              <div className='flex items-center px-5'>
-                <div className='flex-shrink-0'>
-                  <img
-                    className='h-10 w-10 rounded-full'
-                    src={user.imageUrl}
-                    alt=''
-                  />
-                </div>
-                <div className='ml-3'>
-                  <div className='text-base font-medium leading-none text-white'>
-                    {user.name}
-                  </div>
-                  <div className='text-sm font-medium leading-none text-gray-400'>
-                    {user.email}
-                  </div>
-                </div>
-              </div>
-              <div className='mt-3 px-2 space-y-1'>
-                {userNavigation.map((item) => (
-                  <MobileUserNavLink key={item.name} item={item} />
-                ))}
-              </div>
-            </div>
+            {currentUser ? (
+              <MobileUserWrapper
+                user={user}
+                links={IsSeller ? sellerNavigation : userNavigation}
+              />
+            ) : (
+              <>
+                <MobileBtnWrapper links={btnSeller} label='Seller' />
+                <MobileBtnWrapper links={btnUser} label='Customer' />
+              </>
+            )}
           </Disclosure.Panel>
         </>
       )}

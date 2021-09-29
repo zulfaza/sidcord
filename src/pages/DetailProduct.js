@@ -1,310 +1,138 @@
-import React, { useState } from 'react'
-import MainLayout from '../components/MainLayout'
-import { StarIcon } from '@heroicons/react/solid'
-import { RadioGroup } from '@headlessui/react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import MainLayout from "../components/MainLayout";
+import { StarIcon } from "@heroicons/react/solid";
+import parse from "html-react-parser";
+import { Link } from "react-router-dom";
+import classNames from "../utils/ClassNames";
+import API_URL from "../config/API";
+import axios from "axios";
+import { convertToRupiah } from "../utils/CovertToRupiah";
 
-const product = {
-  name: 'Gibson Les Paul Standard \'60s Bourbon Burst',
-  price: '$2,293.80',
-  href: '#',
-  breadcrumbs: [
-    { id: 1, name: 'Guitar', href: '#' },
-    { id: 2, name: 'Electric', href: '#' },
-  ],
-  images: [
-    {
-      src: 'https://images.musicstore.de/images/0960/gibson-les-paul-standard-60s-bourbon-burst_2_GIT0049494-000.jpg',
-      alt: 'Two each of gray, white, and black shirts laying flat.',
-    },
-    {
-      src: 'https://images.musicstore.de/images/0960/gibson-les-paul-standard-60s-bourbon-burst_5_GIT0049494-000.jpg',
-      alt: 'Model wearing plain black basic tee.',
-    },
-    {
-      src: 'https://images.musicstore.de/images/0960/gibson-les-paul-standard-60s-bourbon-burst_4_GIT0049494-000.jpg',
-      alt: 'Model wearing plain gray basic tee.',
-    },
-    {
-      src: 'https://images.musicstore.de/images/0960/gibson-les-paul-standard-60s-bourbon-burst_3_GIT0049494-000.jpg',
-      alt: 'Model wearing plain white basic tee.',
-    },
-  ],
-  colors: [
-    { name: 'White', class: 'bg-white', selectedClass: 'ring-gray-400' },
-    { name: 'Gray', class: 'bg-gray-200', selectedClass: 'ring-gray-400' },
-    { name: 'Black', class: 'bg-gray-900', selectedClass: 'ring-gray-900' },
-  ],
-  sizes: [
-    { name: 'M', inStock: true },
-    { name: 'L', inStock: true },
-    { name: 'XL', inStock: true },
-  ],
-  description:
-    'With the \' Gibson 60s Les Paul Standard Tribute Bourbon Burst , the Original Collection presents Gibson USA an electric guitar that authentically captures the spirit and sound of the innovative Singlecut models from the early 1960s.',
-  highlights: [
-    'Massive mahogany body without weight relief',
-    'Curly maple top in superior AA quality',
-    'Historically correct " Slim Taper " profile',
-  ],
-  details:
-    'Equipped with -V Alnico magnets, the Gibson Burstbucker 61 pickups on the guitar amp deliver an authentic PAF-style sound of distinctive midrange and endless sustain, while the hand-wired circuitry with Orange drop capacitors supports harmonic treble roll-offs. Last but not least, the Gibson \'60s Les Paul Standard has precise Grover Rotomatic tuners, a ABR -1 Tune -O-Matic bridge and a tailpiece made of Aluminium',
-}
-const reviews = { href: '#', average: 4, totalCount: 117 }
+export default function DetailProduct({ match }) {
+  const [Product, setProduct] = useState({});
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
+  useEffect(() => {
+    const slug = match.params.slug;
+    axios.get(API_URL + "/products/" + slug).then((res) => {
+      if (res.data.code === 200) {
+        setProduct(res.data.data.product);
+        console.log(res.data.data.product);
+      }
+    });
+  }, [match]);
 
-export default function DetailProduct() {
-    const [selectedColor, setSelectedColor] = useState(product.colors[0])
-    const [selectedSize, setSelectedSize] = useState(product.sizes[2])
+  const breadcrumbs = [{ id: 1, name: "Guitar", href: "#" }];
 
-    return (
-        <MainLayout>
-            <div className="bg-white">
-                <div className="pt-6">
-                    <nav aria-label="Breadcrumb">
-                    <ol className="max-w-2xl mx-auto px-4 flex items-center space-x-2 sm:px-6 lg:max-w-7xl lg:px-8">
-                        {product.breadcrumbs.map((breadcrumb) => (
-                        <li key={breadcrumb.id}>
-                            <div className="flex items-center">
-                            <Link to={breadcrumb.href} className="mr-2 text-sm font-medium text-gray-900">
-                                {breadcrumb.name}
-                            </Link>
-                            <svg
-                                width={16}
-                                height={20}
-                                viewBox="0 0 16 20"
-                                fill="currentColor"
-                                xmlns="http://www.w3.org/2000/svg"
-                                aria-hidden="true"
-                                className="w-4 h-5 text-gray-300"
-                            >
-                                <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-                            </svg>
-                            </div>
-                        </li>
-                        ))}
-                        <li className="text-sm">
-                        <Link to={product.href} aria-current="page" className="font-medium text-gray-500 hover:text-gray-600">
-                            {product.name}
-                        </Link>
-                        </li>
-                    </ol>
-                    </nav>
+  const reviews = { href: "#", average: 4, totalCount: 117 };
 
-                    {/* Image gallery */}
-                    <div className="mt-6 max-w-2xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-3 lg:gap-x-8">
-                    <div className="hidden aspect-w-3 aspect-h-4 rounded-lg overflow-hidden lg:block">
-                        <img
-                        src={product.images[0].src}
-                        alt={product.images[0].alt}
-                        className="w-full h-full object-center object-cover"
-                        />
-                    </div>
-                    <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
-                        <div className="aspect-w-3 aspect-h-2 rounded-lg overflow-hidden">
-                        <img
-                            src={product.images[1].src}
-                            alt={product.images[1].alt}
-                            className="w-full h-full object-center object-cover"
-                        />
-                        </div>
-                        <div className="aspect-w-3 aspect-h-2 rounded-lg overflow-hidden">
-                        <img
-                            src={product.images[2].src}
-                            alt={product.images[2].alt}
-                            className="w-full h-full object-center object-cover"
-                        />
-                        </div>
-                    </div>
-                    <div className="aspect-w-4 aspect-h-5 sm:rounded-lg sm:overflow-hidden lg:aspect-w-3 lg:aspect-h-4">
-                        <img
-                        src={product.images[3].src}
-                        alt={product.images[3].alt}
-                        className="w-full h-full object-center object-cover"
-                        />
-                    </div>
-                    </div>
+  return (
+    <MainLayout>
+      <div className='bg-white'>
+        <div className='pt-6'>
+          <nav aria-label='Breadcrumb'>
+            <ol className='max-w-2xl mx-auto px-4 flex items-center space-x-2 sm:px-6 lg:max-w-7xl lg:px-8'>
+              {breadcrumbs.map((breadcrumb) => (
+                <li key={breadcrumb.id}>
+                  <div className='flex items-center'>
+                    <Link
+                      to={breadcrumb.href}
+                      className='mr-2 text-sm font-medium text-gray-900'
+                    >
+                      {breadcrumb.name}
+                    </Link>
+                    <svg
+                      width={16}
+                      height={20}
+                      viewBox='0 0 16 20'
+                      fill='currentColor'
+                      xmlns='http://www.w3.org/2000/svg'
+                      aria-hidden='true'
+                      className='w-4 h-5 text-gray-300'
+                    >
+                      <path d='M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z' />
+                    </svg>
+                  </div>
+                </li>
+              ))}
+              <li className='text-sm'>{Product.name}</li>
+            </ol>
+          </nav>
 
-                    {/* Product info */}
-                    <div className="max-w-2xl mx-auto pt-10 pb-16 px-4 sm:px-6 lg:max-w-7xl lg:pt-16 lg:pb-24 lg:px-8 lg:grid lg:grid-cols-3 lg:grid-rows-auto-auto-1fr lg:gap-x-8">
-                    <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-                        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">{product.name}</h1>
-                    </div>
+          {/* Image gallery */}
+          <div className='mt-6 max-w-2xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-3 lg:gap-x-8'>
+            <div className='aspect-w-3 aspect-h-4 rounded-lg overflow-hidden block'>
+              <img
+                src={Product.thumbnail}
+                alt={Product.slug}
+                className='w-full h-full object-center object-cover'
+              />
+            </div>
+            {/* Product info */}
+            <div className='flex flex-col col-span-2'>
+              <div className=' lg:border-r lg:border-gray-200 lg:pr-8'>
+                <h1 className='text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl'>
+                  {Product.name}
+                </h1>
+              </div>
 
-                    {/* Options */}
-                    <div className="mt-4 lg:mt-0 lg:row-span-3">
-                        <h2 className="sr-only">Product information</h2>
-                        <p className="text-3xl text-gray-900">{product.price}</p>
-
-                        {/* Reviews */}
-                        <div className="mt-6">
-                        <h3 className="sr-only">Reviews</h3>
-                        <div className="flex items-center">
-                            <div className="flex items-center">
-                            {[0, 1, 2, 3, 4].map((rating) => (
-                                <StarIcon
-                                key={rating}
-                                className={classNames(
-                                    reviews.average > rating ? 'text-gray-900' : 'text-gray-200',
-                                    'h-5 w-5 flex-shrink-0'
-                                )}
-                                aria-hidden="true"
-                                />
-                            ))}
-                            </div>
-                            <p className="sr-only">{reviews.average} out of 5 stars</p>
-                            <Link to={reviews.href} className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                            {reviews.totalCount} reviews
-                            </Link>
-                        </div>
-                        </div>
-
-                        <form className="mt-10">
-                        {/* Colors */}
-                        <div>
-                            <h3 className="text-sm text-gray-900 font-medium">Color</h3>
-
-                            <RadioGroup value={selectedColor} onChange={setSelectedColor} className="mt-4">
-                            <RadioGroup.Label className="sr-only">Choose a color</RadioGroup.Label>
-                            <div className="flex items-center space-x-3">
-                                {product.colors.map((color) => (
-                                <RadioGroup.Option
-                                    key={color.name}
-                                    value={color}
-                                    className={({ active, checked }) =>
-                                    classNames(
-                                        color.selectedClass,
-                                        active && checked ? 'ring ring-offset-1' : '',
-                                        !active && checked ? 'ring-2' : '',
-                                        '-m-0.5 relative p-0.5 rounded-full flex items-center justify-center cursor-pointer focus:outline-none'
-                                    )
-                                    }
-                                >
-                                    <RadioGroup.Label as="p" className="sr-only">
-                                    {color.name}
-                                    </RadioGroup.Label>
-                                    <span
-                                    aria-hidden="true"
-                                    className={classNames(
-                                        color.class,
-                                        'h-8 w-8 border border-black border-opacity-10 rounded-full'
-                                    )}
-                                    />
-                                </RadioGroup.Option>
-                                ))}
-                            </div>
-                            </RadioGroup>
-                        </div>
-
-                        {/* Sizes */}
-                        <div className="mt-10">
-                            <div className="flex items-center justify-between">
-                            <h3 className="text-sm text-gray-900 font-medium">Size</h3>
-                            <Link to="#" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                                Size guide
-                            </Link>
-                            </div>
-
-                            <RadioGroup value={selectedSize} onChange={setSelectedSize} className="mt-4">
-                            <RadioGroup.Label className="sr-only">Choose a size</RadioGroup.Label>
-                            <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
-                                {product.sizes.map((size) => (
-                                <RadioGroup.Option
-                                    key={size.name}
-                                    value={size}
-                                    disabled={!size.inStock}
-                                    className={({ active }) =>
-                                    classNames(
-                                        size.inStock
-                                        ? 'bg-white shadow-sm text-gray-900 cursor-pointer'
-                                        : 'bg-gray-50 text-gray-200 cursor-not-allowed',
-                                        active ? 'ring-2 ring-indigo-500' : '',
-                                        'group relative border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6'
-                                    )
-                                    }
-                                >
-                                    {({ active, checked }) => (
-                                    <>
-                                        <RadioGroup.Label as="p">{size.name}</RadioGroup.Label>
-                                        {size.inStock ? (
-                                        <div
-                                            className={classNames(
-                                            active ? 'border' : 'border-2',
-                                            checked ? 'border-indigo-500' : 'border-transparent',
-                                            'absolute -inset-px rounded-md pointer-events-none'
-                                            )}
-                                            aria-hidden="true"
-                                        />
-                                        ) : (
-                                        <div
-                                            aria-hidden="true"
-                                            className="absolute -inset-px rounded-md border-2 border-gray-200 pointer-events-none"
-                                        >
-                                            <svg
-                                            className="absolute inset-0 w-full h-full text-gray-200 stroke-2"
-                                            viewBox="0 0 100 100"
-                                            preserveAspectRatio="none"
-                                            stroke="currentColor"
-                                            >
-                                            <line x1={0} y1={100} x2={100} y2={0} vectorEffect="non-scaling-stroke" />
-                                            </svg>
-                                        </div>
-                                        )}
-                                    </>
-                                    )}
-                                </RadioGroup.Option>
-                                ))}
-                            </div>
-                            </RadioGroup>
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="mt-10 w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                            Add to bag
-                        </button>
-                        </form>
-                    </div>
-
-                    <div className="py-10 lg:pt-6 lg:pb-16 lg:col-start-1 lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-                        {/* Description and details */}
-                        <div>
-                        <h3 className="sr-only">Description</h3>
-
-                        <div className="space-y-6">
-                            <p className="text-base text-gray-900">{product.description}</p>
-                        </div>
-                        </div>
-
-                        <div className="mt-10">
-                        <h3 className="text-sm font-medium text-gray-900">Highlights</h3>
-
-                        <div className="mt-4">
-                            <ul className="pl-4 list-disc text-sm space-y-2">
-                            {product.highlights.map((highlight) => (
-                                <li key={highlight} className="text-gray-400">
-                                <span className="text-gray-600">{highlight}</span>
-                                </li>
-                            ))}
-                            </ul>
-                        </div>
-                        </div>
-
-                        <div className="mt-10">
-                        <h2 className="text-sm font-medium text-gray-900">Details</h2>
-
-                        <div className="mt-4 space-y-6">
-                            <p className="text-sm text-gray-600">{product.details}</p>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
+              <div className='py-10 lg:pt-6 lg:pb-16 lg:border-r lg:border-gray-200 lg:pr-8'>
+                {/* Description and details */}
+                <div>
+                  <h3 className='sr-only'>Description</h3>
+                  <div className='space-y-6 text-base text-gray-900'>
+                    {Product.description && parse(Product.description)}
+                  </div>
                 </div>
+              </div>
+
+              {/* Options */}
+              <div className='mt-4 lg:mt-0'>
+                <h2 className='sr-only'>Product information</h2>
+                <p className='text-3xl text-gray-900'>
+                  {Product.price && convertToRupiah(Product.price)}
+                </p>
+
+                {/* Reviews */}
+                <div className='mt-6'>
+                  <h3 className='sr-only'>Reviews</h3>
+                  <div className='flex items-center'>
+                    <div className='flex items-center'>
+                      {[0, 1, 2, 3, 4].map((rating) => (
+                        <StarIcon
+                          key={rating}
+                          className={classNames(
+                            reviews.average > rating
+                              ? "text-gray-900"
+                              : "text-gray-200",
+                            "h-5 w-5 flex-shrink-0"
+                          )}
+                          aria-hidden='true'
+                        />
+                      ))}
+                    </div>
+                    <p className='sr-only'>{reviews.average} out of 5 stars</p>
+                    <Link
+                      to={reviews.href}
+                      className='ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500'
+                    >
+                      {reviews.totalCount} reviews
+                    </Link>
+                  </div>
                 </div>
-        </MainLayout>
-    )
+
+                <form className='mt-10'>
+                  <button
+                    type='submit'
+                    className='mt-10 w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                  >
+                    Add to bag
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </MainLayout>
+  );
 }

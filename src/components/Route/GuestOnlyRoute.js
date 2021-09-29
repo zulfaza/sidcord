@@ -11,7 +11,7 @@ export default function GuestOnlyRoute({ component: Component, ...rest }) {
       {...rest}
       render={(props) => {
         return currentUser ? (
-          <Redirect to={RouteName.dashboard} />
+          <Redirect to={RouteName.home} />
         ) : (
           <Component {...props} />
         );
