@@ -15,7 +15,6 @@ export default function LoginSeller() {
     e.preventDefault();
     setLoading(true);
     return signinWithEmailPassword(Email, Password).then((res) => {
-      console.log(res);
       history.push(RouteName.home);
     });
   }

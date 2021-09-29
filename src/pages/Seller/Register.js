@@ -65,7 +65,6 @@ export default function RegisterSeller() {
     return signupWithEmailPassword(Email, Password, Name, Phone, true)
       .then((data) => {
         if (data.isError) {
-          console.log(data);
           setError(data.message);
           setLoading(false);
         }

@@ -60,7 +60,6 @@ export default function Register() {
     return signupWithEmailPassword(Email, Password, Name, Phone)
       .then((data) => {
         if (data.isError) {
-          console.log(data);
           setError(data.message);
           setLoading(false);
         }

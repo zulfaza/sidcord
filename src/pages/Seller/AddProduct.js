@@ -49,7 +49,6 @@ export default function AddProduct() {
     setLoading(true);
     const token = await currentUser.getIdToken();
     const thumb = Thumbnail[0];
-    console.log(thumb);
     const storageRef = ref(storage, Date.now() + thumb.name);
     const thumbUpload = await uploadBytes(storageRef, thumb)
       .then((snapshot) => {

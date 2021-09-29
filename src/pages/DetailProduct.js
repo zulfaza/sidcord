@@ -16,7 +16,6 @@ export default function DetailProduct({ match }) {
     axios.get(API_URL + "/products/" + slug).then((res) => {
       if (res.data.code === 200) {
         setProduct(res.data.data.product);
-        console.log(res.data.data.product);
       }
     });
   }, [match]);
