@@ -22,12 +22,12 @@ function App() {
       <Router>
         <Switch>
           <Route exact path={RouteName.home} component={Home} />
-          <SellerRoute
+          <Route
             exact
             path={"/seller/add-product"}
             component={AddProduct}
           />
-          <SellerRoute
+          <Route
             exact
             path={"/seller/dashboard"}
             component={DashboardSeller}
