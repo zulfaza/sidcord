@@ -5,6 +5,7 @@ const products = [
     {
       name: 'Gitar Mantab 1',
       price: 'Rp14.000',
+      courier : 'Reguler (1-2 hari) - J&T',
       image:
         'https://id.yamaha.com/id/files/Image-Index_L_series_1080x1080_efb34e0e2c101151b21700fd69cea900.jpg?impolicy=resize&imwid=396&imhei=396',
     },
@@ -33,8 +34,14 @@ export default function TrackingOrder() {
                                     >
                                         Status
                                     </th>
+                                    <th
+                                        scope="col"
+                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    >
+                                        Courier
+                                    </th>
                                     <th scope="col" className="relative px-6 py-3">
-                                        <span className="sr-only">Edit</span>
+                                        <span className="sr-only">Details</span>
                                     </th>
                                 </tr>
                             </thead>
@@ -57,6 +64,9 @@ export default function TrackingOrder() {
                                         Active
                                     </span>
                                     </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm text-gray-500">{product.courier}</div>
+                                        </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <a href="#" className="text-indigo-600 hover:text-indigo-900">
                                         Details
