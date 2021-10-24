@@ -11,11 +11,16 @@ export default function LoginSeller() {
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const history = useHistory();
+  const [Error, setError] = useState("");
   async function Login(e) {
     e.preventDefault();
     setLoading(true);
     return signinWithEmailPassword(Email, Password).then((res) => {
-      history.push(RouteName.home);
+      if (res.isError) {
+        setError(res.massage);
+        return;
+      }
+      return history.push(RouteName.home);
     });
   }
 
@@ -58,6 +63,7 @@ export default function LoginSeller() {
             </Link>
           </p>
         </div>
+        <div className='text-red-600'>{Error}</div>
         <form className='mt-8 space-y-6' onSubmit={Login}>
           <input type='hidden' name='remember' defaultValue='true' />
           <div className='rounded-md shadow-sm -space-y-px'>

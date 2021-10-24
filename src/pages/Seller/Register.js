@@ -61,9 +61,10 @@ export default function RegisterSeller() {
   async function Register(e) {
     e.preventDefault();
     setLoading(true);
-
     return signupWithEmailPassword(Email, Password, Name, Phone, true)
       .then((data) => {
+        console.log("data : ", data);
+
         if (data.isError) {
           setError(data.message);
           setLoading(false);
@@ -75,15 +76,13 @@ export default function RegisterSeller() {
         return res.user.getIdTokenResult();
       })
       .then((res) => {
-        if (res.claims.seller) {
-          setIsSeller(true);
-        }
-        history.push("/seller/dashboard");
+        if (res.claims.seller) setIsSeller(true);
+        return history.push("/seller/dashboard");
       })
       .catch((err) => {
-        console.log(err);
-        setError(err.message);
+        console.error(err);
         setLoading(false);
+        setError(err.message);
       });
   }
 

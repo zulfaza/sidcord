@@ -54,7 +54,7 @@ function App() {
             path={RouteName.sellerLogin}
             component={LoginSeller}
           />
-          <GuestOnlyRoute
+          <Route
             exact
             path={RouteName.sellerRegister}
             component={RegisterSeller}

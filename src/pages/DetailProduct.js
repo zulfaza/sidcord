@@ -72,6 +72,7 @@ export default function DetailProduct({ match }) {
                 <h1 className='text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl'>
                   {Product.name}
                 </h1>
+                <h2>Stock : {Product.stock}</h2>
               </div>
 
               <div className='py-10 lg:pt-6 lg:pb-16 lg:border-r lg:border-gray-200 lg:pr-8'>

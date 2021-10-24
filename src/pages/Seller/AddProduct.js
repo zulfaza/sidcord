@@ -92,6 +92,7 @@ export default function AddProduct() {
       .post(API_URL + "/products", request, config)
       .then((res) => {
         setLoading(false);
+        console.log(res);
         history.push("/seller/dashboard");
       })
       .catch((err) => {

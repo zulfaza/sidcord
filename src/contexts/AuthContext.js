@@ -18,7 +18,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [IsSeller, setIsSeller] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loadingContext, setLoadingContext] = useState(true);
 
   async function signupWithEmailPassword(
     email,
@@ -62,6 +62,7 @@ export function AuthProvider({ children }) {
     const token = await userCredential.user.getIdToken();
     const config = {
       headers: {
+        "Access-Control-Allow-Origin": "*",
         authentication: token,
       },
     };
@@ -74,10 +75,11 @@ export function AuthProvider({ children }) {
     };
 
     const api_endpoint = isSeller ? "/sellers" : "/customers";
-
+    console.log("Before API request");
     return await axios
       .post(API_URL + api_endpoint, request, config)
       .then((response) => {
+        console.log(userCredential.user);
         return {
           massage: "success",
           data: response,
@@ -126,10 +128,10 @@ export function AuthProvider({ children }) {
           } else {
             setIsSeller(false);
           }
-          setLoading(false);
+          setLoadingContext(false);
         });
       } else {
-        setLoading(false);
+        setLoadingContext(false);
       }
       setCurrentUser(user);
     });
@@ -143,11 +145,12 @@ export function AuthProvider({ children }) {
     signupWithEmailPassword,
     signinWithEmailPassword,
     setIsSeller,
+    setLoadingContext,
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {!loadingContext && children}
     </AuthContext.Provider>
   );
 }

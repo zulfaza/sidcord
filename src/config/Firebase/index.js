@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getStorage } from "firebase/storage";
+import { getAuth, connectAuthEmulator } from "firebase/auth";
+import { getStorage, connectStorageEmulator } from "firebase/storage";
 const firebaseConfig = {
   apiKey: "AIzaSyA66AzaZWQNT4ADVwjGm0BivTKVfrAFbag",
   authDomain: "sidcord-15021.firebaseapp.com",
@@ -13,4 +13,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth();
 export const storage = getStorage(app);
+
+if (window.location.hostname === "localhost") {
+  connectAuthEmulator(auth, "http://localhost:9099");
+  connectStorageEmulator(storage, "localhost", 9199);
+}
+
 export default app;
