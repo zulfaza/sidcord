@@ -16,6 +16,7 @@ import GuestOnlyRoute from "./components/Route/GuestOnlyRoute";
 import UserRoute from "./components/Route/UserRoute";
 import SellerRoute from "./components/Route/SellerRoute";
 import TrackingOrder from "./pages/Customer/TrackingOrder";
+import ShoppingCart from "./pages/Customer/ShoppingCart";
 
 function App() {
   return (
@@ -28,6 +29,11 @@ function App() {
             component={TrackingOrder}
           />
           <Route exact path={RouteName.home} component={Home} />
+          <Route
+            exact
+            path={"/customer/shopping-cart"}
+            component={ShoppingCart}
+          />
           <Route
             exact
             path={"/seller/add-product"}
