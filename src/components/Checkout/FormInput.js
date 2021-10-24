@@ -13,7 +13,6 @@ export const FormInput = ({ label, type = "text", placeholder }) => {
           ></textarea>
         </div>
       );
-      break;
 
     default:
       return (

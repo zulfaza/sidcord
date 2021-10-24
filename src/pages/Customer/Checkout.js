@@ -3,7 +3,6 @@ import { FormInput } from "../../components/Checkout/FormInput";
 import MainLayout from "../../components/MainLayout";
 import Card from "../../components/Checkout/Card";
 import { convertToRupiah } from "../../utils/CovertToRupiah";
-import { XIcon } from "@heroicons/react/outline";
 const Inputs = [
   {
     label: "Nama",

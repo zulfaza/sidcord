@@ -230,3 +230,66 @@ Issues? Report them at https://github.com/firebase/firebase-tools/issues and att
 Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
  
 [warn] !  Received a signed JWT. Auth Emulator does not validate JWTs and IS NOT SECURE {"metadata":{"emulator":{"name":"auth"},"message":"Received a signed JWT. Auth Emulator does not validate JWTs and IS NOT SECURE"}}
+[debug] [2021-10-24T15:36:57.160Z] ----------------------------------------------------------------------
+[debug] [2021-10-24T15:36:57.162Z] Command:       C:\Program Files\nodejs\node.exe C:\xampp\htdocs\sidcord\node_modules\firebase-tools\lib\bin\firebase.js emulators:start
+[debug] [2021-10-24T15:36:57.162Z] CLI Version:   9.21.0
+[debug] [2021-10-24T15:36:57.162Z] Platform:      win32
+[debug] [2021-10-24T15:36:57.162Z] Node Version:  v14.17.6
+[debug] [2021-10-24T15:36:57.166Z] Time:          Sun Oct 24 2021 22:36:57 GMT+0700 (Western Indonesia Time)
+[debug] [2021-10-24T15:36:57.166Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-10-24T15:36:57.217Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] Failed to authenticate, have you run firebase login?
+[warn] !  emulators: You are not currently authenticated so some features may not work correctly. Please run firebase login to authenticate the CLI. 
+[info] i  emulators: Starting emulators: auth, hosting, storage {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, hosting, storage"}}
+[warn] !  emulators: It seems that you are running multiple instances of the emulator suite for project sidcord-15021. This may result in unexpected behavior. 
+[debug] [2021-10-24T15:36:57.571Z] [hub] writing locator at C:\Users\EMAIL_~1\AppData\Local\Temp\hub-sidcord-15021.json
+[debug] [2021-10-24T15:36:59.958Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"storage"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2021-10-24T15:37:00.163Z] Temp file directory for storage emulator: C:\Users\EMAIL_~1\AppData\Local\Temp/firebase/storage/blobs {"metadata":{"emulator":{"name":"storage"},"message":"Temp file directory for storage emulator: C:\\Users\\EMAIL_~1\\AppData\\Local\\Temp/firebase/storage/blobs"}}
+[debug] [2021-10-24T15:37:00.838Z] > refreshing access token with scopes: []
+[debug] [2021-10-24T15:37:00.839Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-10-24T15:37:00.964Z] <<< HTTP RESPONSE 400 {"pragma":"no-cache","cache-control":"no-cache, no-store, max-age=0, must-revalidate","date":"Sun, 24 Oct 2021 15:37:00 GMT","expires":"Mon, 01 Jan 1990 00:00:00 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-10-24T15:37:00.966Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/sidcord-15021/sites 
+[debug] [2021-10-24T15:37:02.341Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/sidcord-15021/sites 401
+[debug] [2021-10-24T15:37:02.341Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/sidcord-15021/sites {"error":{"code":401,"message":"Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"CREDENTIALS_MISSING","domain":"googleapis.com","metadata":{"method":"ListSites","service":"firebasehosting.googleapis.com"}}]}}
+[debug] [2021-10-24T15:37:02.342Z] Failed to list hosting sites
+[debug] HTTP Error: 401, Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+[debug] [2021-10-24T15:37:02.342Z] > refreshing access token with scopes: []
+[debug] [2021-10-24T15:37:02.342Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-10-24T15:37:02.559Z] <<< HTTP RESPONSE 400 {"cache-control":"no-cache, no-store, max-age=0, must-revalidate","expires":"Mon, 01 Jan 1990 00:00:00 GMT","date":"Sun, 24 Oct 2021 15:37:02 GMT","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-10-24T15:37:02.560Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/sidcord-15021/webApps/-/config [none]
+[debug] [2021-10-24T15:37:02.959Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/sidcord-15021/webApps/-/config 401
+[debug] [2021-10-24T15:37:02.959Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/sidcord-15021/webApps/-/config {"error":{"code":401,"message":"Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"CREDENTIALS_MISSING","domain":"googleapis.com","metadata":{"service":"firebase.googleapis.com","method":"google.firebase.service.v1beta1.WebAppService.GetWebAppConfig"}}]}}
+[debug] [2021-10-24T15:37:02.959Z] fetchWebSetup error: FirebaseError: HTTP Error: 401, Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+[warn] !  hosting: Could not fetch web app configuration and there is no cached configuration on this machine. Check your internet connection and make sure you are authenticated. To continue, you must call firebase.initializeApp({...}) in your code before using Firebase. 
+[info] i  hosting: Serving hosting files from: build {"metadata":{"emulator":{"name":"hosting"},"message":"Serving hosting files from: \u001b[1mbuild\u001b[22m"}}
+[info] +  hosting: Local server: http://localhost:7000 {"metadata":{"emulator":{"name":"hosting"},"message":"Local server: \u001b[4m\u001b[1mhttp://localhost:7000\u001b[22m\u001b[24m"}}
+[warn] !  ui: Emulator UI unable to start on port 4000, starting on 4001 instead. {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI unable to start on port 4000, starting on 4001 instead."}}
+[debug] [2021-10-24T15:37:03.002Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2021-10-24T15:37:03.002Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2021-10-24T15:37:03.002Z] Starting Emulator UI with command {"binary":"node","args":["C:\\Users\\email_rnog17x\\.cache\\firebase\\emulators\\ui-v1.6.4\\server.bundle.js"],"optionalArgs":[],"joinArgs":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"C:\\\\Users\\\\email_rnog17x\\\\.cache\\\\firebase\\\\emulators\\\\ui-v1.6.4\\\\server.bundle.js\"],\"optionalArgs\":[],\"joinArgs\":false}"}}
+[info] i  ui: Emulator UI logging to ui-debug.log {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI logging to \u001b[1mui-debug.log\u001b[22m"}}
+[debug] [2021-10-24T15:37:03.120Z] Web / API server started at localhost:4001
+ {"metadata":{"emulator":{"name":"ui"},"message":"Web / API server started at localhost:4001\n"}}
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://localhost:4001                │
+└─────────────────────────────────────────────────────────────┘
+
+┌────────────────┬────────────────┬───────────────────────────────┐
+│ Emulator       │ Host:Port      │ View in Emulator UI           │
+├────────────────┼────────────────┼───────────────────────────────┤
+│ Authentication │ localhost:9099 │ http://localhost:4001/auth    │
+├────────────────┼────────────────┼───────────────────────────────┤
+│ Hosting        │ localhost:7000 │ n/a                           │
+├────────────────┼────────────────┼───────────────────────────────┤
+│ Storage        │ localhost:9199 │ http://localhost:4001/storage │
+└────────────────┴────────────────┴───────────────────────────────┘
+  Emulator Hub running at localhost:4400
+  Other reserved ports: 4500
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
