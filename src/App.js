@@ -16,6 +16,7 @@ import GuestOnlyRoute from "./components/Route/GuestOnlyRoute";
 import UserRoute from "./components/Route/UserRoute";
 import SellerRoute from "./components/Route/SellerRoute";
 import TrackingOrder from "./pages/Customer/TrackingOrder";
+import { Checkout } from "./pages/Customer/Checkout";
 
 function App() {
   return (
@@ -27,17 +28,10 @@ function App() {
             path={"/customer/tracking-order"}
             component={TrackingOrder}
           />
+          <Route exact path={"/customer/checkout"} component={Checkout} />
           <Route exact path={RouteName.home} component={Home} />
-          <Route
-            exact
-            path={"/seller/add-product"}
-            component={AddProduct}
-          />
-          <Route
-            exact
-            path={"/seller/dashboard"}
-            component={DashboardSeller}
-          />
+          <Route exact path={"/seller/add-product"} component={AddProduct} />
+          <Route exact path={"/seller/dashboard"} component={DashboardSeller} />
           <Route exact path={"/product/:slug"} component={DetailProduct} />
           <UserRoute
             exact
