@@ -15,12 +15,18 @@ import EditProfileSeller from "./pages/Seller/EditProfileSeller";
 import GuestOnlyRoute from "./components/Route/GuestOnlyRoute";
 import UserRoute from "./components/Route/UserRoute";
 import SellerRoute from "./components/Route/SellerRoute";
+import TrackingOrder from "./pages/Customer/TrackingOrder";
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Switch>
+          <Route
+            exact
+            path={"/customer/tracking-order"}
+            component={TrackingOrder}
+          />
           <Route exact path={RouteName.home} component={Home} />
           <Route
             exact
