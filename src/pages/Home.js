@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import Hero from "../components/HomePage/Hero";
 import Product from "../components/HomePage/Product";
 import MainLayout from "../components/MainLayout";
-import API_URL from "../config/API";
+import Api from "../utils/Api";
 
 export default function Home() {
   const [Products, setProducts] = useState([]);
   useEffect(() => {
-    axios.get(API_URL + "/products").then((res) => {
+    Api.get("/products").then((res) => {
       if (res.data.code === 200) {
         setProducts(res.data.data.product);
       }

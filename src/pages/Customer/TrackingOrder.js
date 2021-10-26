@@ -1,19 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import MainLayout from "../../components/MainLayout";
-
-const products = [
-  {
-    name: "Gitar Mantab 1",
-    price: "Rp14.000",
-    courier: "Reguler (1-2 hari) - J&T",
-    image:
-      "https://id.yamaha.com/id/files/Image-Index_L_series_1080x1080_efb34e0e2c101151b21700fd69cea900.jpg?impolicy=resize&imwid=396&imhei=396",
-  },
-  // More people...
-];
+import { useAuth } from "../../contexts/AuthContext";
+import Api from "../../utils/Api";
+import { convertToRupiah } from "../../utils/CovertToRupiah";
 
 export default function TrackingOrder() {
+  const [Orders, setOrders] = useState([]);
+  const { currentUser } = useAuth();
+  console.log(Orders);
+  useEffect(() => {
+    Api.get(`/carts/checkout/${currentUser.uid}`)
+      .then((res) => {
+        console.log();
+        if (res.data.data.length > 0) setOrders(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [currentUser]);
+
   return (
     <MainLayout title='Tracking Order'>
       <div className='flex flex-col'>
@@ -47,30 +53,37 @@ export default function TrackingOrder() {
                   </tr>
                 </thead>
                 <tbody className='bg-white divide-y divide-gray-200'>
-                  {products.map((product, index) => (
-                    <tr key={index}>
+                  {Orders.map((product) => (
+                    <tr key={product.id}>
                       <td className='px-6 py-4 whitespace-nowrap'>
-                        <div className='flex items-center'>
-                          <div className='flex-shrink-0 h-10 w-10'>
-                            <img
-                              className='h-10 w-10 rounded-full'
-                              src={product.image}
-                              alt=''
-                            />
-                          </div>
-                          <div className='ml-4'>
-                            <div className='text-sm font-medium text-gray-900'>
-                              {product.name}
+                        <h4>
+                          Order ID :
+                          <span className='font-bold ml-3'>{product.id}</span>
+                        </h4>
+                        <h6>Items : </h6>
+                        {product.cartItems.map((item) => (
+                          <div className='flex items-center mb-3'>
+                            <div className='flex-shrink-0 h-10 w-10'>
+                              <img
+                                className='h-10 w-10 rounded-full'
+                                src={item.thumbnail}
+                                alt=''
+                              />
                             </div>
-                            <div className='text-sm text-gray-500'>
-                              {product.price}
+                            <div className='ml-4'>
+                              <div className='text-sm font-medium text-gray-900'>
+                                {item.name} x {item.quantity}
+                              </div>
+                              <div className='text-sm text-gray-500'>
+                                {convertToRupiah(item.price)}
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        ))}
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap'>
                         <span className='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800'>
-                          Active
+                          {getStatusLabel(product.status)}
                         </span>
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap'>
@@ -96,4 +109,19 @@ export default function TrackingOrder() {
       </div>
     </MainLayout>
   );
+}
+
+function getStatusLabel(status) {
+  switch (status) {
+    case 2:
+      return "Proses";
+    case 3:
+      return "Kirim";
+    case 4:
+      return "Diantar oleh kurir";
+    case 5:
+      return "Diterima";
+    default:
+      return "Menunggu Pembayaran";
+  }
 }

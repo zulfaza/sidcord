@@ -3,10 +3,9 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
 } from "@firebase/auth";
-import axios from "axios";
 import React, { useContext, useState, useEffect } from "react";
-import API_URL from "../config/API";
 import { auth } from "../config/Firebase";
+import Api from "../utils/Api";
 import StringToSlug from "../utils/StringToSlug";
 
 const AuthContext = React.createContext();
@@ -75,9 +74,8 @@ export function AuthProvider({ children }) {
     };
 
     const api_endpoint = isSeller ? "/sellers" : "/customers";
-    console.log("Before API request");
-    return await axios
-      .post(API_URL + api_endpoint, request, config)
+
+    return await Api.post(api_endpoint, request, config)
       .then((response) => {
         console.log(userCredential.user);
         return {

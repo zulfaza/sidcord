@@ -1,14 +1,24 @@
 import { Menu, Transition } from "@headlessui/react";
 import React, { Fragment } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import { useCart } from "../../contexts/CartContext";
 import UserNavLink from "./UserNavLink";
 
 export default function ProfileDropDown({ user, userNavigation }) {
+  const { CartNumber = 0 } = useCart();
+  const { IsSeller } = useAuth();
+
   return (
     <Menu as='div' className='ml-3 relative'>
       <div>
-        <Menu.Button className='max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white'>
+        <Menu.Button className='relative max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white'>
           <span className='sr-only'>Open user menu</span>
           <img className='h-8 w-8 rounded-full' src={user.imageUrl} alt='' />
+          {!IsSeller && (
+            <span className='absolute -top-2 -right-3 bg-white px-1.5 rounded-full'>
+              {CartNumber}
+            </span>
+          )}
         </Menu.Button>
       </div>
       <Transition

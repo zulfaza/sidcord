@@ -7,9 +7,8 @@ import { useDropzone } from "react-dropzone";
 import StringToSlug from "../../utils/StringToSlug";
 import { storage } from "../../config/Firebase";
 import { getDownloadURL, ref, uploadBytes } from "@firebase/storage";
-import axios from "axios";
-import API_URL from "../../config/API";
 import { useHistory } from "react-router";
+import Api from "../../utils/Api";
 
 export default function AddProduct() {
   const { currentUser } = useAuth();
@@ -88,16 +87,15 @@ export default function AddProduct() {
       },
     };
 
-    return axios
-      .post(API_URL + "/products", request, config)
+    return Api.post("/products", request, config)
       .then((res) => {
-        setLoading(false);
         console.log(res);
         history.push("/seller/dashboard");
       })
       .catch((err) => {
         console.log(err);
-      });
+      })
+      .finally(() => setLoading(false));
   }
 
   return (

@@ -2,8 +2,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import MainLayout from "../../components/MainLayout";
-import API_URL from "../../config/API";
 import { useAuth } from "../../contexts/AuthContext";
+import Api from "../../utils/Api";
 import { convertToRupiah } from "../../utils/CovertToRupiah";
 
 export default function Example() {
@@ -20,7 +20,7 @@ export default function Example() {
             authentication: token,
           },
         };
-        return axios.get(API_URL + "/sellers/get/products", config);
+        return Api.get("/sellers/get/products", config);
       })
       .then((res) => {
         if (res.data.code === 200) {
@@ -95,21 +95,21 @@ export default function Example() {
                       <td colSpan='4'>
                         <div className='flex justify-center items-center  my-5'>
                           <svg
-                            class='animate-spin -ml-1 mr-3 h-7 w-7 text-gray-500'
+                            className='animate-spin -ml-1 mr-3 h-7 w-7 text-gray-500'
                             xmlns='http://www.w3.org/2000/svg'
                             fill='none'
                             viewBox='0 0 24 24'
                           >
                             <circle
-                              class='opacity-25'
+                              className='opacity-25'
                               cx='12'
                               cy='12'
                               r='10'
                               stroke='currentColor'
-                              stroke-width='4'
+                              strokeWidth='4'
                             ></circle>
                             <path
-                              class='opacity-75'
+                              className='opacity-75'
                               fill='currentColor'
                               d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
                             ></path>

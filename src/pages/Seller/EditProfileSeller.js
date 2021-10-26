@@ -1,9 +1,8 @@
 import { updateProfile } from "@firebase/auth";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import MainLayout from "../../components/MainLayout";
-import API_URL from "../../config/API";
 import { useAuth } from "../../contexts/AuthContext";
+import Api from "../../utils/Api";
 
 export default function EditProfileSeller() {
   const { currentUser } = useAuth();
@@ -21,7 +20,7 @@ export default function EditProfileSeller() {
             authentication: token,
           },
         };
-        return axios.get(API_URL + "/sellers/" + currentUser.uid, config);
+        return Api.get("/sellers/" + currentUser.uid, config);
       })
       .then((res) => {
         if (res.data.code === 200 && res.data.data.seller) {
@@ -63,8 +62,7 @@ export default function EditProfileSeller() {
 
     setLoading(true);
 
-    return axios
-      .put(API_URL + "/sellers/" + currentUser.uid, request, config)
+    return Api.put("/sellers/" + currentUser.uid, request, config)
       .then((res) => {
         setLoading(false);
         console.log(res);

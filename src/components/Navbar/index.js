@@ -34,6 +34,8 @@ export default function Navbar() {
 
   const userNavigation = [
     { name: "Your Profile", href: "/customer/edit-profile" },
+    { name: "Cart", href: "/customer/shopping-cart" },
+    { name: "Track order", href: "/customer/tracking-order" },
     { name: "Sign out", href: "#", onClick: logout },
   ];
 
