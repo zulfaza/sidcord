@@ -6,6 +6,7 @@ export const FormInput = ({
   placeholder,
   value,
   onchange,
+  name,
 }) => {
   switch (type) {
     case "textarea":
@@ -17,6 +18,7 @@ export const FormInput = ({
             onChange={onchange}
             className='w-full border border-gray-300 rounded'
             placeholder={placeholder}
+            name={name}
             rows='6'
           ></textarea>
         </div>
@@ -32,6 +34,7 @@ export const FormInput = ({
             className='w-full border border-gray-300 rounded'
             type={type}
             placeholder={placeholder}
+            name={name}
           />
         </div>
       );

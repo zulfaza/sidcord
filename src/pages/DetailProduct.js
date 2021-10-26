@@ -11,6 +11,7 @@ import { useHistory } from "react-router";
 
 export default function DetailProduct({ match }) {
   const [Product, setProduct] = useState({});
+  const [ProductStock, setProductStock] = useState(0);
   const history = useHistory();
 
   useEffect(() => {
@@ -18,6 +19,7 @@ export default function DetailProduct({ match }) {
     Api.get("/products/" + slug).then((res) => {
       if (res.data.code === 200 && res.data.data.product) {
         setProduct(res.data.data.product);
+        setProductStock(res.data.data.product.stock);
       }
 
       if (!res.data.data.product) {
@@ -32,7 +34,7 @@ export default function DetailProduct({ match }) {
         <div className='pt-6'>
           <Breadcrumb product={Product} />
           <div className='mt-6 max-w-2xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-3 lg:gap-x-8'>
-            <div className='aspect-w-3 aspect-h-4 rounded-lg overflow-hidden block'>
+            <div className='aspect-w-3 aspect-h-4 max-h-96 rounded-2xl overflow-hidden block'>
               <img
                 src={Product.thumbnail}
                 alt={Product.slug}
@@ -45,7 +47,7 @@ export default function DetailProduct({ match }) {
                 <h1 className='text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl'>
                   {Product.name}
                 </h1>
-                <h2>Stock : {Product.stock}</h2>
+                <h2>Stock : {ProductStock}</h2>
               </div>
 
               <div className='py-10 lg:pt-6 lg:pb-16 lg:border-r lg:border-gray-200 lg:pr-8'>
@@ -67,7 +69,12 @@ export default function DetailProduct({ match }) {
 
                 {/* Reviews */}
                 <Reviews />
-                <AddToCartButton productId={Product.id} />
+                <AddToCartButton
+                  ProductStock={ProductStock}
+                  setProductStock={setProductStock}
+                  Product={Product}
+                  productId={Product.id}
+                />
               </div>
             </div>
           </div>

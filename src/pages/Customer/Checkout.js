@@ -18,9 +18,10 @@ const KurirOptions = [
 
 const calculateTotalProduct = (products) => {
   let total = 0;
-  products.forEach((product) => {
-    total += product.price * product.quantity;
-  });
+  if (products?.length > 0)
+    products.forEach((product) => {
+      total += product.price * product.quantity;
+    });
   return total;
 };
 
@@ -42,6 +43,7 @@ export const Checkout = () => {
       placeholder: "Masukan nama penerima",
       value: Nama,
       onchange: (e) => setNama(e.target.value),
+      name: "name",
     },
     {
       label: "Email",
@@ -49,13 +51,15 @@ export const Checkout = () => {
       type: "email",
       value: Email,
       onchange: (e) => setEmail(e.target.value),
+      name: "email",
     },
     {
       label: "No Telp",
       placeholder: "Masukan No Telp penerima",
-      type: "number",
+      type: "tel",
       value: NoTelp,
       onchange: (e) => setNoTelp(e.target.value),
+      name: "phone",
     },
     {
       label: "Alamat",
@@ -63,6 +67,7 @@ export const Checkout = () => {
       type: "textarea",
       value: Alamat,
       onchange: (e) => setAlamat(e.target.value),
+      name: "address",
     },
   ];
 
@@ -80,6 +85,7 @@ export const Checkout = () => {
       alamat: Alamat,
       namaKurir: SelectedKurir,
       id: Cart.id,
+      customerUID: currentUser.uid,
     };
 
     const config = {
@@ -98,8 +104,9 @@ export const Checkout = () => {
     if (apiRes.status === 200) {
       updateCart();
       setBtnSubmitLabel("Success !");
+      console.log(apiRes);
       setTimeout(() => {
-        history.push("/customer/tracking-order");
+        window.location.href = apiRes.data.data.redirectUrl;
       }, 500);
     } else {
       setIsSubmit(false);

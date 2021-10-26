@@ -62,7 +62,7 @@ export default function TrackingOrder() {
                         </h4>
                         <h6>Items : </h6>
                         {product.cartItems.map((item) => (
-                          <div className='flex items-center mb-3'>
+                          <div key={item.id} className='flex items-center mb-3'>
                             <div className='flex-shrink-0 h-10 w-10'>
                               <img
                                 className='h-10 w-10 rounded-full'
@@ -121,6 +121,8 @@ function getStatusLabel(status) {
       return "Diantar oleh kurir";
     case 5:
       return "Diterima";
+    case 6:
+      return "Gagal";
     default:
       return "Menunggu Pembayaran";
   }

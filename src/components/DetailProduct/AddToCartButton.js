@@ -4,7 +4,12 @@ import Api from "../../utils/Api";
 import GetUserToken from "../../utils/GetUserToken";
 import { useCart } from "../../contexts/CartContext";
 
-export default function AddToCartButton({ productId }) {
+export default function AddToCartButton({
+  productId,
+  Product,
+  ProductStock,
+  setProductStock,
+}) {
   const { updateCart } = useCart();
   const { currentUser, IsSeller } = useAuth();
   const [IsLoading, setIsLoading] = useState(false);
@@ -36,7 +41,7 @@ export default function AddToCartButton({ productId }) {
     } else {
       setLabel("Error X_x, try again later");
     }
-
+    setProductStock(ProductStock - 1);
     setIsLoading(false);
   };
 
@@ -45,7 +50,7 @@ export default function AddToCartButton({ productId }) {
       {!IsSeller && (
         <button
           onClick={onSubmit}
-          disabled={IsLoading}
+          disabled={IsLoading || parseInt(Product.stock) < 1}
           type='submit'
           className='mt-10 disabled:opacity-50 w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
         >

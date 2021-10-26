@@ -18,6 +18,7 @@ export function CartProvider({ children }) {
     Api.get(`/carts/${currentUser.uid}`).then((res) => {
       setCart(res?.data?.data);
       if (res.data.data) setCartNumber(res?.data?.data?.totalQuantity);
+      else setCartNumber(0);
     });
   }
 
