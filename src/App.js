@@ -30,14 +30,14 @@ function App() {
       <CartProvider>
         <Router>
           <Switch>
-            <Route
+            <UserRoute
               exact
               path={"/customer/tracking-order"}
               component={TrackingOrder}
             />
-            <Route exact path={"/customer/checkout"} component={Checkout} />
+            <UserRoute exact path={"/customer/checkout"} component={Checkout} />
             <Route exact path={RouteName.home} component={Home} />
-            <Route
+            <UserRoute
               exact
               path={"/customer/shopping-cart"}
               component={ShoppingCart}
