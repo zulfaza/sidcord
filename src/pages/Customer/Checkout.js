@@ -185,7 +185,7 @@ export const Checkout = () => {
                   <button
                     disabled={IsSubmit}
                     onClick={onSubmit}
-                    className='px-6 py-3 rounded-md bg-blue-600 text-white font-medium'
+                    className='px-6 disabled:opacity-50 py-3 rounded-md bg-blue-600 text-white font-medium'
                   >
                     {BtnSubmitLabel}
                   </button>
