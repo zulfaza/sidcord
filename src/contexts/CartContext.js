@@ -10,13 +10,13 @@ export function useCart() {
 
 export function CartProvider({ children }) {
   const { currentUser } = useAuth();
-  const [Cart, setCart] = useState([]);
+  const [Order, setOrder] = useState([]);
   const [CartNumber, setCartNumber] = useState(0);
   const [loadingContext, setLoadingContext] = useState(true);
 
   function updateCart() {
     Api.get(`/carts/${currentUser.uid}`).then((res) => {
-      setCart(res?.data?.data);
+      setOrder(res?.data?.data);
       if (res.data.data) setCartNumber(res?.data?.data?.totalQuantity);
       else setCartNumber(0);
     });
@@ -26,14 +26,14 @@ export function CartProvider({ children }) {
     setLoadingContext(false);
     if (currentUser) {
       Api.get(`/carts/${currentUser.uid}`).then((res) => {
-        setCart(res?.data?.data);
+        setOrder(res?.data?.data);
         if (res.data.data) setCartNumber(res?.data?.data?.totalQuantity);
       });
     }
   }, [currentUser]);
 
   const value = {
-    Cart,
+    Order,
     updateCart,
     CartNumber,
   };

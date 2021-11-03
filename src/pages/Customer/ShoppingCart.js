@@ -5,11 +5,11 @@ import RouteName from "../../config/Route";
 import { useCart } from "../../contexts/CartContext";
 import { convertToRupiah } from "../../utils/CovertToRupiah";
 export default function ShoppingCart() {
-  const { Cart } = useCart();
+  const { Order } = useCart();
 
   return (
     <MainLayout title='Shopping Cart'>
-      {Cart?.cartItems?.length > 0 ? (
+      {Order?.carts?.length > 0 ? (
         <div className='flex justify-between items-start gap-5'>
           <div className='flex flex-col w-3/5'>
             <div className='-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
@@ -45,42 +45,46 @@ export default function ShoppingCart() {
                       </tr>
                     </thead>
                     <tbody className='bg-white divide-y divide-gray-200'>
-                      {Cart.cartItems.map((product, index) => (
-                        <tr key={index}>
-                          <td className='px-6 py-4 whitespace-nowrap'>
-                            <div className='flex items-center'>
-                              <div className='flex-shrink-0 h-10 w-10'>
-                                <img
-                                  className='h-10 w-10 rounded-full'
-                                  src={product.thumbnail}
-                                  alt=''
-                                />
-                              </div>
-                              <div className='ml-4'>
-                                <div className='text-sm font-medium text-gray-900'>
-                                  {product.name}
+                      {Order.carts.map((Cart) => (
+                        <>
+                          {Cart.cartItems.map((product, index) => (
+                            <tr key={index}>
+                              <td className='px-6 py-4 whitespace-nowrap'>
+                                <div className='flex items-center'>
+                                  <div className='flex-shrink-0 h-10 w-10'>
+                                    <img
+                                      className='h-10 w-10 rounded-full'
+                                      src={product.thumbnail}
+                                      alt=''
+                                    />
+                                  </div>
+                                  <div className='ml-4'>
+                                    <div className='text-sm font-medium text-gray-900'>
+                                      {product.name}
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className='px-6 py-4 whitespace-nowrap'>
-                            <div className='text-sm text-gray-500'>
-                              {convertToRupiah(product.price)}
-                            </div>
-                          </td>
-                          <td className='px-6 py-4 whitespace-nowrap'>
-                            <div className='text-sm text-gray-500'>
-                              {product.quantity}
-                            </div>
-                          </td>
-                          <td className='px-6 py-4 whitespace-nowrap'>
-                            <div className='text-sm text-gray-500'>
-                              {convertToRupiah(
-                                product.price * product.quantity
-                              )}
-                            </div>
-                          </td>
-                        </tr>
+                              </td>
+                              <td className='px-6 py-4 whitespace-nowrap'>
+                                <div className='text-sm text-gray-500'>
+                                  {convertToRupiah(product.price)}
+                                </div>
+                              </td>
+                              <td className='px-6 py-4 whitespace-nowrap'>
+                                <div className='text-sm text-gray-500'>
+                                  {product.quantity}
+                                </div>
+                              </td>
+                              <td className='px-6 py-4 whitespace-nowrap'>
+                                <div className='text-sm text-gray-500'>
+                                  {convertToRupiah(
+                                    product.price * product.quantity
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </>
                       ))}
                     </tbody>
                   </table>
@@ -91,7 +95,7 @@ export default function ShoppingCart() {
           <div className='flex flex-col justify-center items-center w-2/5 bg-gray-200 rounded-md p-6'>
             <div className='flex w-full justify-between items-center mb-3'>
               <p>Total:</p>
-              <p>{convertToRupiah(Cart?.totalPrice || 0)}</p>
+              <p>{convertToRupiah(Order?.totalPrice || 0)}</p>
             </div>
             <Link
               to={"/customer/checkout"}

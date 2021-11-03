@@ -23,6 +23,7 @@ import EditProfileSeller from "./pages/Seller/EditProfileSeller";
 import TrackingOrder from "./pages/Customer/TrackingOrder";
 import { Checkout } from "./pages/Customer/Checkout";
 import ShoppingCart from "./pages/Customer/ShoppingCart";
+import AddAddress from "./pages/Customer/AddAddress";
 
 function App() {
   return (
@@ -47,6 +48,11 @@ function App() {
               exact
               path={"/seller/dashboard"}
               component={DashboardSeller}
+            />
+            <Route
+              exact
+              path={"/customer/add-address"}
+              component={AddAddress}
             />
             <Route exact path={"/product/:slug"} component={DetailProduct} />
             <UserRoute

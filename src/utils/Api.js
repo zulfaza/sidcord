@@ -7,6 +7,7 @@ if (window.location.hostname === "localhost") {
 } else {
   API_URL = "https://sidcord.herokuapp.com";
 }
+
 const Api = axios.create({
   baseURL: API_URL,
 });

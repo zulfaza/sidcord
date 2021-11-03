@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { FormInput } from "../../components/Checkout/FormInput";
+import React, { Fragment, useEffect, useState } from "react";
 import MainLayout from "../../components/MainLayout";
 import Card from "../../components/Checkout/Card";
 import { convertToRupiah } from "../../utils/CovertToRupiah";
@@ -8,85 +7,136 @@ import { useHistory } from "react-router";
 import { useAuth } from "../../contexts/AuthContext";
 import GetUserToken from "../../utils/GetUserToken";
 import Api from "../../utils/Api";
+import { Dialog, Transition } from "@headlessui/react";
+import { Link } from "react-router-dom";
 
-const KurirOptions = [
-  {
-    label: "Reguler (1-2 hari) - J&T",
-    value: "Reguler (1-2 hari) - J&T",
-  },
-];
-
-const calculateTotalProduct = (products) => {
+const calculateTotalProduct = (Carts) => {
   let total = 0;
-  if (products?.length > 0)
-    products.forEach((product) => {
-      total += product.price * product.quantity;
+  if (Carts && Carts.length > 0)
+    Carts.forEach((cart) => {
+      if (cart.cartItems.length > 0)
+        cart.cartItems.forEach((product) => {
+          total += product.price * product.quantity;
+        });
     });
+
   return total;
 };
 
+const calculateTotalShippingCost = (kurirs) => {
+  let totalShippingCost = 0;
+  const keys = Object.keys(kurirs);
+  if (keys.length < 1) return 0;
+
+  keys.forEach((key) => {
+    totalShippingCost += kurirs[key].shippingCost;
+  });
+
+  return totalShippingCost;
+};
+
 export const Checkout = () => {
-  const { Cart, updateCart } = useCart();
+  const { Order, updateCart } = useCart();
   const { currentUser } = useAuth();
   const history = useHistory();
   const [Nama, setNama] = useState("");
   const [Email, setEmail] = useState("");
   const [NoTelp, setNoTelp] = useState("");
   const [Alamat, setAlamat] = useState("");
-  const [SelectedKurir, setSelectedKurir] = useState(KurirOptions[0].value);
+  const [SelectedKurir, setSelectedKurir] = useState({});
   const [IsSubmit, setIsSubmit] = useState(false);
   const [BtnSubmitLabel, setBtnSubmitLabel] = useState("Bayar");
-
-  const Inputs = [
-    {
-      label: "Nama",
-      placeholder: "Masukan nama penerima",
-      value: Nama,
-      onchange: (e) => setNama(e.target.value),
-      name: "name",
-    },
-    {
-      label: "Email",
-      placeholder: "Masukan email penerima",
-      type: "email",
-      value: Email,
-      onchange: (e) => setEmail(e.target.value),
-      name: "email",
-    },
-    {
-      label: "No Telp",
-      placeholder: "Masukan No Telp penerima",
-      type: "tel",
-      value: NoTelp,
-      onchange: (e) => setNoTelp(e.target.value),
-      name: "phone",
-    },
-    {
-      label: "Alamat",
-      placeholder: "Masukan alamt penerima",
-      type: "textarea",
-      value: Alamat,
-      onchange: (e) => setAlamat(e.target.value),
-      name: "address",
-    },
-  ];
+  const [Addresses, setAddresses] = useState([]);
+  const [SelectedAddress, setSelectedAddress] = useState({});
+  const [KurirOptions, setKurirOptions] = useState([]);
+  const [IsOpen, setIsOpen] = useState(false);
+  const [TotalShippingCost, setTotalShippingCost] = useState(0);
+  const [TotalProductCost, setTotalProductCost] = useState(0);
 
   useEffect(() => {
-    if (Cart?.cartItems?.length < 1) history.push("/customer/shopping-cart");
-  }, [history, Cart]);
+    setTotalProductCost(calculateTotalProduct(Order?.carts ?? 0));
+  }, [Order]);
+
+  useEffect(() => {
+    setTotalShippingCost(calculateTotalShippingCost(SelectedKurir));
+  }, [SelectedKurir]);
+
+  useEffect(() => {
+    Api.get(`/address?customerUID=${currentUser.uid}`).then((res) => {
+      setAddresses(res.data.data);
+      setSelectedAddress(res.data.data[0]);
+    });
+
+    Api.get(`/couriers`).then((res) => {
+      setKurirOptions(res.data.data);
+    });
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (Order?.totalQuantity < 1) history.push("/customer/shopping-cart");
+  }, [history, Order]);
+
+  function UpdateShippingCost(address) {
+    const newSelectedKurir = {
+      ...SelectedKurir,
+    };
+    const keys = Object.keys(newSelectedKurir);
+    if (keys.length < 1) return;
+
+    keys.forEach((key) => {
+      if (newSelectedKurir[key]) {
+        const shippingCost = CalculateShippingCost(
+          newSelectedKurir[key].basePrice,
+          address
+        );
+        newSelectedKurir[key] = {
+          ...newSelectedKurir[key],
+          shippingCost,
+        };
+      }
+    });
+    setSelectedKurir(newSelectedKurir);
+  }
+
+  function CalculateShippingCost(basePrice, address = SelectedAddress) {
+    let totalASCIIProvinsi = 0;
+    let totalASCIIKota = 0;
+    const provinsiTujuan = address.provinsi;
+    const kotaTujuan = address.city;
+    for (let i = 0; i < provinsiTujuan.length; i++) {
+      totalASCIIProvinsi += provinsiTujuan.charCodeAt(i);
+    }
+    for (let i = 0; i < kotaTujuan.length; i++) {
+      totalASCIIKota += kotaTujuan.charCodeAt(i);
+    }
+    return (basePrice * Math.abs(totalASCIIKota - totalASCIIProvinsi)) / 100;
+  }
+
+  function HandleGantiKurir(kurirId, cartId) {
+    const kurir = KurirOptions.filter(
+      (data) => data.id === parseInt(kurirId)
+    )[0];
+    const ArrSelectedKurir = {
+      ...SelectedKurir,
+    };
+    const shippingCost = CalculateShippingCost(kurir.basePrice);
+    ArrSelectedKurir[cartId] = {
+      ...kurir,
+      shippingCost,
+    };
+    setSelectedKurir(ArrSelectedKurir);
+  }
 
   const onSubmit = async () => {
     setIsSubmit(true);
 
     const reqBody = {
-      namaPenerima: Nama,
-      email: Email,
-      noTelp: NoTelp,
-      alamat: Alamat,
-      namaKurir: SelectedKurir,
-      id: Cart.id,
+      alamatId: SelectedAddress.id,
+      kurirIds: SelectedKurir,
       customerUID: currentUser.uid,
     };
+
+    setIsSubmit(false);
 
     const config = {
       headers: {
@@ -116,60 +166,110 @@ export const Checkout = () => {
 
   return (
     <MainLayout title='Checkout'>
+      <AddressModal
+        setIsOpen={setIsOpen}
+        setSelectedAddress={setSelectedAddress}
+        IsOpen={IsOpen}
+        SelectedAddress={SelectedAddress}
+        Addresses={Addresses}
+        UpdateShippingCost={UpdateShippingCost}
+      />
       <div className='container gap-10 md:grid grid-cols-2'>
         <div>
           <div className='mb-5'>
-            <h2 className='text-2xl font-medium mb-6'>Alamat Pengiriman</h2>
-            <Card>
-              {Inputs.map((input, index) => (
-                <FormInput key={index} {...input} />
-              ))}
-            </Card>
-          </div>
-          <div className='mb-5'>
-            <h2 className='text-2xl font-medium mb-6'>Kurir Pengiriman</h2>
-            <Card>
-              <select
-                onChange={(e) => setSelectedKurir(e.target.value)}
-                className='w-full border border-gray-300 rounded'
-              >
-                {KurirOptions.map((option, index) => (
-                  <option key={index} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </Card>
+            <h2 className='text-2xl font-medium mb-6'>Ringkasan Belanja</h2>
+            {Order?.carts?.map((Cart) => (
+              <div key={Cart.id}>
+                <h3>{Cart.seller.name}</h3>
+                <Card>
+                  {Cart?.cartItems?.map((product) => (
+                    <>
+                      <div
+                        key={product.id}
+                        className='flex justify-between mb-5'
+                      >
+                        <div className='flex'>
+                          <div className='relative mr-3'>
+                            <div className='w-20 h-20 overflow-hidden rounded-md'>
+                              <img
+                                className='object-cover w-full h-full object-center'
+                                src={product.thumbnail}
+                                alt={product.name}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <h5 className='text-xl capitalize'>
+                              {product.name}
+                            </h5>
+                            <h6>{convertToRupiah(product.price)}</h6>
+                          </div>
+                        </div>
+                        <div className='flex items-center'>
+                          <span className='text-lg font-medium'>
+                            x {product.quantity}
+                          </span>
+                        </div>
+                      </div>
+                      <hr />
+                    </>
+                  ))}
+                  <select
+                    defaultValue={"default"}
+                    onChange={(e) => HandleGantiKurir(e.target.value, Cart.id)}
+                    className='w-full my-3 border border-gray-300 rounded'
+                  >
+                    <option value='default' disabled>
+                      Pilih Kurir
+                    </option>
+                    {KurirOptions.map((option) => (
+                      <option key={option.id} value={option.id}>
+                        {option.nama}
+                      </option>
+                    ))}
+                  </select>
+                  <div>
+                    {SelectedKurir[Cart.id] && (
+                      <span>
+                        {convertToRupiah(SelectedKurir[Cart.id]?.shippingCost)}
+                      </span>
+                    )}
+                  </div>
+                </Card>
+              </div>
+            ))}
           </div>
         </div>
         <div>
           <div className='mb-5'>
-            <h2 className='text-2xl font-medium mb-6'>Ringkasan Belanja</h2>
+            <h2 className='text-2xl font-medium mb-6'>Alamat Pengiriman</h2>
             <Card>
-              {Cart?.cartItems?.map((product, index) => (
-                <div key={index} className='flex justify-between mb-5'>
-                  <div className='flex'>
-                    <div className='relative mr-3'>
-                      <div className='w-20 h-20 overflow-hidden rounded-md'>
-                        <img
-                          className='object-cover w-full h-full object-center'
-                          src={product.thumbnail}
-                          alt={product.name}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <h5 className='text-xl'>{product.name}</h5>
-                      <h6>{convertToRupiah(product.price)}</h6>
-                    </div>
+              {Addresses.length > 0 ? (
+                <div className='p-4 rounded-lg border flex justify-between items-start'>
+                  <div>
+                    <h5 className='text-lg font-bold'>
+                      {SelectedAddress.nama}
+                    </h5>
+                    <p className='text-sm'>
+                      {SelectedAddress.city}, {SelectedAddress.provinsi},
+                      {SelectedAddress.keterangan}
+                    </p>
+                    <p>Telp:{SelectedAddress.notelp}</p>
                   </div>
-                  <div className='flex items-center'>
-                    <span className='text-lg font-medium'>
-                      x {product.quantity}
-                    </span>
+                  <div>
+                    <button
+                      onClick={() => setIsOpen(true)}
+                      className='rounded-md border px-4 py-2 capitalize'
+                    >
+                      ganti alamat
+                    </button>
                   </div>
                 </div>
-              ))}
+              ) : (
+                <div className='border rounded-xl border-dashed border-gray-400 p-6'>
+                  <Link to='/customer/add-address'>+ Tambah Alamat</Link>
+                </div>
+              )}
             </Card>
           </div>
           <div>
@@ -177,8 +277,17 @@ export const Checkout = () => {
               <div className='py-3 px-5'>
                 <div className='flex justify-between mb-5 text-xl'>
                   <span>Total Harga Barang</span>
+                  <span>{convertToRupiah(TotalProductCost)}</span>
+                </div>
+                <div className='flex justify-between mb-5 text-xl'>
+                  <span>Total Biaya Pengiriman</span>
+                  <span>{convertToRupiah(TotalShippingCost)}</span>
+                </div>
+                <hr className='mb-5' />
+                <div className='flex justify-between mb-5 text-xl'>
+                  <span>Total</span>
                   <span>
-                    {convertToRupiah(calculateTotalProduct(Cart?.cartItems))}
+                    {convertToRupiah(TotalShippingCost + TotalProductCost)}
                   </span>
                 </div>
                 <div className='flex justify-center'>
@@ -196,5 +305,101 @@ export const Checkout = () => {
         </div>
       </div>
     </MainLayout>
+  );
+};
+
+const AddressModal = ({
+  IsOpen,
+  setIsOpen,
+  SelectedAddress,
+  setSelectedAddress,
+  Addresses,
+  UpdateShippingCost,
+}) => {
+  return (
+    <>
+      <Transition appear show={IsOpen} as={Fragment}>
+        <Dialog
+          as='div'
+          className='fixed inset-0 z-10 overflow-y-auto'
+          onClose={() => setIsOpen(false)}
+        >
+          <div className='min-h-screen px-4 text-center'>
+            <Transition.Child
+              as={Fragment}
+              enter='ease-out duration-300'
+              enterFrom='opacity-0'
+              enterTo='opacity-100'
+              leave='ease-in duration-200'
+              leaveFrom='opacity-100'
+              leaveTo='opacity-0'
+            >
+              <Dialog.Overlay className='fixed inset-0 bg-black bg-opacity-50' />
+            </Transition.Child>
+
+            {/* This element is to trick the browser into centering the modal contents. */}
+            <span
+              className='inline-block h-screen align-middle'
+              aria-hidden='true'
+            >
+              &#8203;
+            </span>
+            <Transition.Child
+              as={Fragment}
+              enter='ease-out duration-300'
+              enterFrom='opacity-0 scale-95'
+              enterTo='opacity-100 scale-100'
+              leave='ease-in duration-200'
+              leaveFrom='opacity-100 scale-100'
+              leaveTo='opacity-0 scale-95'
+            >
+              <div className='inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl'>
+                <Dialog.Title
+                  as='h3'
+                  className='text-lg font-medium leading-6 text-gray-900'
+                >
+                  Pilih alamat
+                </Dialog.Title>
+
+                <div className='p-3 rounded-lg border border-dashed my-4'>
+                  <Link to='/customer/add-address'>+ Tambah Alamat</Link>
+                </div>
+
+                <div className='my-4'>
+                  {Addresses.map((alamat) => (
+                    <div
+                      key={alamat.id}
+                      className='flex mb-5 justify-between items-start p-4 rounded-lg border'
+                    >
+                      <div>
+                        <h5 className='text-lg font-bold'>{alamat.nama}</h5>
+                        <p className='text-sm'>
+                          {alamat.city}, {alamat.provinsi},{alamat.keterangan}{" "}
+                        </p>
+                        <p>Telp:{alamat.notelp}</p>
+                      </div>
+                      {SelectedAddress.id !== alamat.id && (
+                        <div>
+                          <button
+                            onClick={() => {
+                              setIsOpen(false);
+                              setSelectedAddress(alamat);
+                              UpdateShippingCost(alamat);
+                            }}
+                            className='rounded-md border px-4 py-2 capitalize'
+                          >
+                            Pilih
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition>
+    </>
   );
 };
