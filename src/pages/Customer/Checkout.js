@@ -72,31 +72,49 @@ export const Checkout = () => {
     if (Order?.totalQuantity < 1) history.push("/customer/shopping-cart");
   }, [history, Order]);
 
-  function UpdateShippingCost(address) {
+  async function UpdateShippingCost(address) {
     const newSelectedKurir = {
       ...SelectedKurir,
     };
     const keys = Object.keys(newSelectedKurir);
     if (keys.length < 1) return;
 
+    let promises = [];
+
     keys.forEach((key) => {
       if (newSelectedKurir[key]) {
-        const shippingCost = CalculateShippingCost(
-          newSelectedKurir[key].basePrice,
-          address
+        promises.push(
+          CalculateShippingCost(
+            newSelectedKurir[key].basePrice,
+            newSelectedKurir[key].sellerId,
+            address
+          ).then((shippingCost) => {
+            newSelectedKurir[key] = {
+              ...newSelectedKurir[key],
+              shippingCost,
+            };
+          })
         );
-        newSelectedKurir[key] = {
-          ...newSelectedKurir[key],
-          shippingCost,
-        };
       }
     });
+
+    await Promise.all(promises);
     setSelectedKurir(newSelectedKurir);
   }
 
-  function CalculateShippingCost(basePrice, address = SelectedAddress) {
+  async function CalculateShippingCost(
+    basePrice,
+    sellerId,
+    address = SelectedAddress
+  ) {
     let totalASCIIProvinsi = 0;
     let totalASCIIKota = 0;
+    const sellerAddres = await Api.get(`/address?sellerUID=${sellerId}`).then(
+      (res) => {
+        if (res.data.data.length > 0) return res.data.data[0];
+        return null;
+      }
+    );
     const provinsiTujuan = address.provinsi;
     const kotaTujuan = address.city;
     for (let i = 0; i < provinsiTujuan.length; i++) {
@@ -105,19 +123,30 @@ export const Checkout = () => {
     for (let i = 0; i < kotaTujuan.length; i++) {
       totalASCIIKota += kotaTujuan.charCodeAt(i);
     }
-    return (basePrice * Math.abs(totalASCIIKota - totalASCIIProvinsi)) / 100;
+    const provinsiSeller = sellerAddres.provinsi;
+    const kotaSeller = sellerAddres.city;
+    for (let i = 0; i < provinsiSeller.length; i++) {
+      totalASCIIProvinsi -= provinsiSeller.charCodeAt(i);
+    }
+    for (let i = 0; i < kotaSeller.length; i++) {
+      totalASCIIKota -= kotaSeller.charCodeAt(i);
+    }
+    const tambahan = Math.abs(totalASCIIKota + totalASCIIProvinsi) / 100 || 1.2;
+
+    return basePrice * tambahan;
   }
 
-  function HandleGantiKurir(kurirId, cartId) {
+  async function HandleGantiKurir(kurirId, cartId, sellerId) {
     const kurir = KurirOptions.filter(
       (data) => data.id === parseInt(kurirId)
     )[0];
     const ArrSelectedKurir = {
       ...SelectedKurir,
     };
-    const shippingCost = CalculateShippingCost(kurir.basePrice);
+    const shippingCost = await CalculateShippingCost(kurir.basePrice, sellerId);
     ArrSelectedKurir[cartId] = {
       ...kurir,
+      sellerId,
       shippingCost,
     };
     setSelectedKurir(ArrSelectedKurir);
@@ -150,7 +179,6 @@ export const Checkout = () => {
     if (apiRes.status === 200) {
       updateCart();
       setBtnSubmitLabel("Success !");
-      console.log(apiRes);
       setTimeout(() => {
         window.location.href = apiRes.data.data.redirectUrl;
       }, 500);
@@ -212,7 +240,9 @@ export const Checkout = () => {
                   ))}
                   <select
                     defaultValue={"default"}
-                    onChange={(e) => HandleGantiKurir(e.target.value, Cart.id)}
+                    onChange={(e) =>
+                      HandleGantiKurir(e.target.value, Cart.id, Cart.sellerUID)
+                    }
                     className='w-full my-3 border border-gray-300 rounded'
                   >
                     <option value='default' disabled>

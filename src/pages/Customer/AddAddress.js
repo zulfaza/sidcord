@@ -6,7 +6,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import Api from "../../utils/Api";
 
 export default function AddAddress() {
-  const { currentUser } = useAuth();
+  const { currentUser, IsSeller } = useAuth();
 
   const [Nama, setNama] = useState("");
   const [Email, setEmail] = useState("");
@@ -103,10 +103,11 @@ export default function AddAddress() {
       nama: Nama,
       notelp: NoTelp,
       keterangan: Alamat,
-      customerUID: currentUser.uid,
       email: Email,
     };
-    console.log(data);
+    if (IsSeller) data.sellerUID = currentUser.uid;
+    else data.customerUID = currentUser.uid;
+
     Api.post("/address", data)
       .then((res) => {
         console.log(res);

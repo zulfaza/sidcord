@@ -35,9 +35,9 @@ export default function Example() {
 
   return (
     <MainLayout title={"List Product"}>
-      <section className='py-2 align-middle inline-block min-w-full mb-5'>
+      <section className='py-2 flex align-middle min-w-full mb-5'>
         <Link
-          className='bg-green-500 hover:bg-green-600 transition-colors text-white flex w-max pl-3 pr-4 py-3 rounded-lg'
+          className='bg-green-500 mr-4 hover:bg-green-600 transition-colors text-white flex w-max pl-3 pr-4 py-3 rounded-lg'
           to='/seller/add-product'
         >
           <svg
@@ -55,6 +55,26 @@ export default function Example() {
             />
           </svg>
           <span>Tambah Product</span>
+        </Link>
+        <Link
+          className='bg-green-500 hover:bg-green-600 transition-colors text-white flex w-max pl-3 pr-4 py-3 rounded-lg'
+          to='/seller/add-address'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            className='h-6 w-6 mr-2'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth={2}
+              d='M12 6v6m0 0v6m0-6h6m-6 0H6'
+            />
+          </svg>
+          <span>Tambah Alamat</span>
         </Link>
       </section>
 

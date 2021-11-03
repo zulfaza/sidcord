@@ -43,13 +43,17 @@ function App() {
               path={"/customer/shopping-cart"}
               component={ShoppingCart}
             />
-            <Route exact path={"/seller/add-product"} component={AddProduct} />
+            <SellerRoute
+              exact
+              path={"/seller/add-product"}
+              component={AddProduct}
+            />
             <SellerRoute
               exact
               path={"/seller/dashboard"}
               component={DashboardSeller}
             />
-            <Route
+            <UserRoute
               exact
               path={"/customer/add-address"}
               component={AddAddress}
@@ -59,6 +63,11 @@ function App() {
               exact
               path={"/customer/edit-profile"}
               component={EditProfile}
+            />
+            <SellerRoute
+              exact
+              path={"/seller/add-address"}
+              component={AddAddress}
             />
             <SellerRoute
               exact
