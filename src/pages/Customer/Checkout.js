@@ -39,10 +39,6 @@ export const Checkout = () => {
   const { Order, updateCart } = useCart();
   const { currentUser } = useAuth();
   const history = useHistory();
-  const [Nama, setNama] = useState("");
-  const [Email, setEmail] = useState("");
-  const [NoTelp, setNoTelp] = useState("");
-  const [Alamat, setAlamat] = useState("");
   const [SelectedKurir, setSelectedKurir] = useState({});
   const [IsSubmit, setIsSubmit] = useState(false);
   const [BtnSubmitLabel, setBtnSubmitLabel] = useState("Bayar");
@@ -183,7 +179,7 @@ export const Checkout = () => {
                 <h3>{Cart.seller.name}</h3>
                 <Card>
                   {Cart?.cartItems?.map((product) => (
-                    <>
+                    <div key={product.id}>
                       <div
                         key={product.id}
                         className='flex justify-between mb-5'
@@ -212,7 +208,7 @@ export const Checkout = () => {
                         </div>
                       </div>
                       <hr />
-                    </>
+                    </div>
                   ))}
                   <select
                     defaultValue={"default"}
