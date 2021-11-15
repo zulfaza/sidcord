@@ -24,6 +24,7 @@ import TrackingOrder from "./pages/Customer/TrackingOrder";
 import { Checkout } from "./pages/Customer/Checkout";
 import ShoppingCart from "./pages/Customer/ShoppingCart";
 import AddAddress from "./pages/Customer/AddAddress";
+import OrderInfo from "./pages/Seller/OrderInfo";
 
 function App() {
   return (
@@ -89,6 +90,11 @@ function App() {
               exact
               path={RouteName.sellerRegister}
               component={RegisterSeller}
+            />
+            <Route
+              exact
+              path={"/seller/order-info"}
+              component={OrderInfo}
             />
             <Route path='*' component={Error404} />
           </Switch>
