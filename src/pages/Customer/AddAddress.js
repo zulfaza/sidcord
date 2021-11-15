@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router";
 import Card from "../../components/Checkout/Card";
 import { FormInput } from "../../components/Checkout/FormInput";
 import MainLayout from "../../components/MainLayout";
@@ -7,14 +8,41 @@ import Api from "../../utils/Api";
 
 export default function AddAddress() {
   const { currentUser, IsSeller } = useAuth();
-
+  const history = useHistory();
   const [Nama, setNama] = useState("");
   const [Email, setEmail] = useState("");
   const [NoTelp, setNoTelp] = useState("");
-  const [Province, setProvince] = useState("Jawa Barat");
-  const [City, setCity] = useState("Bandung");
+  const [Province, setProvince] = useState(-1);
+  const [City, setCity] = useState(-1);
   const [Alamat, setAlamat] = useState("");
   const [IsSubmit, setIsSubmit] = useState(false);
+  const [ListProvinsi, setListProvinsi] = useState([]);
+  const [ListKota, setListKota] = useState([
+    { label: "Pilih kota", value: -1, isDisabled: true },
+  ]);
+
+  useEffect(() => {
+    Api.get("/couriers/provinsi").then((res) => {
+      let arrProv = res.data.map((prov) => ({
+        label: prov.province,
+        value: prov.province_id,
+      }));
+      setProvince(arrProv[0].value);
+      setListProvinsi(arrProv);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (Province > 0)
+      Api.get("/couriers/kota/" + Province).then((res) => {
+        let arrCity = res.data.map((prov) => ({
+          label: prov.city_name,
+          value: prov.city_id,
+        }));
+        setCity(arrCity[0].value);
+        setListKota(arrCity);
+      });
+  }, [Province]);
 
   const Inputs = [
     {
@@ -47,20 +75,7 @@ export default function AddAddress() {
       value: Province,
       onchange: (e) => setProvince(e.target.value),
       name: "province",
-      options: [
-        {
-          label: "Jawa Barat",
-          value: "Jawa Barat",
-        },
-        {
-          label: "Jawa Timur",
-          value: "Jawa Timur",
-        },
-        {
-          label: "Jawa Tengah",
-          value: "Jawa Tengah",
-        },
-      ],
+      options: ListProvinsi,
     },
     {
       label: "Kabupaten/Kota",
@@ -69,20 +84,7 @@ export default function AddAddress() {
       value: City,
       onchange: (e) => setCity(e.target.value),
       name: "city",
-      options: [
-        {
-          label: "Bandung",
-          value: "Bandung",
-        },
-        {
-          label: "Surabaya",
-          value: "Surabaya",
-        },
-        {
-          label: "Pekalongan",
-          value: "Pekalongan",
-        },
-      ],
+      options: ListKota,
     },
     {
       label: "Alamat",
@@ -111,7 +113,7 @@ export default function AddAddress() {
     Api.post("/address", data)
       .then((res) => {
         console.log(res);
-        setIsSubmit(false);
+        return history.push("/");
       })
       .catch((err) => {
         setIsSubmit(false);

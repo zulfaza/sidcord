@@ -1,5 +1,6 @@
+import { Dialog, Transition } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Fragment } from "react";
 import MainLayout from "../../components/MainLayout";
 import { useAuth } from "../../contexts/AuthContext";
 import Api from "../../utils/Api";
@@ -7,6 +8,8 @@ import { convertToRupiah } from "../../utils/CovertToRupiah";
 
 export default function TrackingOrder() {
   const [Orders, setOrders] = useState([]);
+  const [IsOpen, setIsOpen] = useState(false);
+  const [PaymentData, setPaymentData] = useState({});
   const { currentUser } = useAuth();
   useEffect(() => {
     Api.get(`/carts/checkout/${currentUser.uid}`)
@@ -19,8 +22,93 @@ export default function TrackingOrder() {
       });
   }, [currentUser]);
 
+  function handlePaymentDetail(orderId) {
+    setIsOpen(true);
+    Api.get(`/payments/${orderId}`).then((res) => {
+      setPaymentData(JSON.parse(res.data.data));
+    });
+  }
+
   return (
     <MainLayout title='Tracking Order'>
+      <Transition appear show={IsOpen} as={Fragment}>
+        <Dialog
+          as='div'
+          className='fixed inset-0 z-10 overflow-y-auto'
+          onClose={() => setIsOpen(false)}
+        >
+          <div className='min-h-screen px-4 text-center'>
+            <Transition.Child
+              as={Fragment}
+              enter='ease-out duration-300'
+              enterFrom='opacity-0'
+              enterTo='opacity-100'
+              leave='ease-in duration-200'
+              leaveFrom='opacity-100'
+              leaveTo='opacity-0'
+            >
+              <Dialog.Overlay className='fixed bg-black bg-opacity-40 inset-0' />
+            </Transition.Child>
+
+            {/* This element is to trick the browser into centering the modal contents. */}
+            <span
+              className='inline-block h-screen align-middle'
+              aria-hidden='true'
+            >
+              &#8203;
+            </span>
+            <Transition.Child
+              as={Fragment}
+              enter='ease-out duration-300'
+              enterFrom='opacity-0 scale-95'
+              enterTo='opacity-100 scale-100'
+              leave='ease-in duration-200'
+              leaveFrom='opacity-100 scale-100'
+              leaveTo='opacity-0 scale-95'
+            >
+              <div className='inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl'>
+                <Dialog.Title
+                  as='h3'
+                  className='text-lg font-medium leading-6 text-gray-900'
+                >
+                  Payment Detail
+                </Dialog.Title>
+                <div className='mt-2'>
+                  {PaymentData?.va_numbers?.length > 0 && (
+                    <>
+                      <div>
+                        Tujuan :
+                        <span className='uppercase ml-4'>
+                          {PaymentData?.va_numbers[0].bank}
+                        </span>
+                      </div>
+                      <div>
+                        VA Number :
+                        <span className='uppercase ml-4'>
+                          {PaymentData?.va_numbers[0].va_number}
+                        </span>
+                      </div>
+                      <div>
+                        Status:
+                        <span className='uppercase ml-4'>
+                          {PaymentData?.transaction_status}
+                        </span>
+                      </div>
+                      <div>
+                        Jumlah:
+                        <span className='uppercase ml-4'>
+                          {convertToRupiah(parseInt(PaymentData?.gross_amount))}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition>
+
       <div className='flex flex-col'>
         <div className='-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
           <div className='py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8'>
@@ -95,16 +183,20 @@ export default function TrackingOrder() {
                           </td>
                           <td className='px-6 py-4 whitespace-nowrap'>
                             <div className='text-sm text-gray-500'>
-                              {product?.kurir?.nama}
+                              {product?.kurirId}
                             </div>
                           </td>
                           <td className='px-6 py-4 whitespace-nowrap text-right text-sm font-medium'>
-                            <Link
-                              to='#'
+                            <button
+                              onClick={() =>
+                                handlePaymentDetail(
+                                  `${order.id}-${currentUser.uid}`
+                                )
+                              }
                               className='text-indigo-600 hover:text-indigo-900'
                             >
                               Details
-                            </Link>
+                            </button>
                           </td>
                         </tr>
                       ))

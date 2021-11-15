@@ -23,18 +23,6 @@ const calculateTotalProduct = (Carts) => {
   return total;
 };
 
-const calculateTotalShippingCost = (kurirs) => {
-  let totalShippingCost = 0;
-  const keys = Object.keys(kurirs);
-  if (keys.length < 1) return 0;
-
-  keys.forEach((key) => {
-    totalShippingCost += kurirs[key].shippingCost;
-  });
-
-  return totalShippingCost;
-};
-
 export const Checkout = () => {
   const { Order, updateCart } = useCart();
   const { currentUser } = useAuth();
@@ -54,7 +42,18 @@ export const Checkout = () => {
   }, [Order]);
 
   useEffect(() => {
-    setTotalShippingCost(calculateTotalShippingCost(SelectedKurir));
+    const calculateTotalShippingCost = async (kurirs) => {
+      const keys = Object.keys(kurirs);
+      let totalShippingCost = 0;
+      keys.forEach((key) => {
+        totalShippingCost += kurirs[key].shippingCost;
+      });
+      return totalShippingCost;
+    };
+
+    calculateTotalShippingCost(SelectedKurir).then((shippingCost) =>
+      setTotalShippingCost(shippingCost)
+    );
   }, [SelectedKurir]);
 
   useEffect(() => {
@@ -103,47 +102,30 @@ export const Checkout = () => {
   }
 
   async function CalculateShippingCost(
-    basePrice,
+    kurir,
     sellerId,
     address = SelectedAddress
   ) {
-    let totalASCIIProvinsi = 0;
-    let totalASCIIKota = 0;
-    const sellerAddres = await Api.get(`/address?sellerUID=${sellerId}`).then(
-      (res) => {
-        if (res.data.data.length > 0) return res.data.data[0];
-        return null;
-      }
+    const sellerAddress = await Api.get("/address/?sellerUID=" + sellerId).then(
+      (res) => res.data.data[0]
     );
-    const provinsiTujuan = address.provinsi;
-    const kotaTujuan = address.city;
-    for (let i = 0; i < provinsiTujuan.length; i++) {
-      totalASCIIProvinsi += provinsiTujuan.charCodeAt(i);
-    }
-    for (let i = 0; i < kotaTujuan.length; i++) {
-      totalASCIIKota += kotaTujuan.charCodeAt(i);
-    }
-    const provinsiSeller = sellerAddres.provinsi;
-    const kotaSeller = sellerAddres.city;
-    for (let i = 0; i < provinsiSeller.length; i++) {
-      totalASCIIProvinsi -= provinsiSeller.charCodeAt(i);
-    }
-    for (let i = 0; i < kotaSeller.length; i++) {
-      totalASCIIKota -= kotaSeller.charCodeAt(i);
-    }
-    const tambahan = Math.abs(totalASCIIKota + totalASCIIProvinsi) / 100 || 1.2;
 
-    return basePrice * tambahan;
+    const params = {
+      asal: sellerAddress.city,
+      tujuan: address.city,
+      kurir: kurir,
+    };
+    return Api.post("/couriers/ongkir", params).then(
+      (res) => res.data[0].value
+    );
   }
 
   async function HandleGantiKurir(kurirId, cartId, sellerId) {
-    const kurir = KurirOptions.filter(
-      (data) => data.id === parseInt(kurirId)
-    )[0];
+    const kurir = KurirOptions.filter((data) => data.id === kurirId)[0];
     const ArrSelectedKurir = {
       ...SelectedKurir,
     };
-    const shippingCost = await CalculateShippingCost(kurir.basePrice, sellerId);
+    const shippingCost = await CalculateShippingCost(kurirId, sellerId);
     ArrSelectedKurir[cartId] = {
       ...kurir,
       sellerId,
@@ -204,7 +186,10 @@ export const Checkout = () => {
             <h2 className='text-2xl font-medium mb-6'>Ringkasan Belanja</h2>
             {Order?.carts?.map((Cart) => (
               <div key={Cart.id}>
-                <h3>{Cart.seller.name}</h3>
+                <h3 className='text-lg capitalize font-bold'>
+                  {Cart.seller.name}
+                </h3>
+                <h5>{Cart.seller.address.recap}</h5>
                 <Card>
                   {Cart?.cartItems?.map((product) => (
                     <div key={product.id}>
@@ -276,10 +261,7 @@ export const Checkout = () => {
                     <h5 className='text-lg font-bold'>
                       {SelectedAddress.nama}
                     </h5>
-                    <p className='text-sm'>
-                      {SelectedAddress.city}, {SelectedAddress.provinsi},
-                      {SelectedAddress.keterangan}
-                    </p>
+                    <p className='text-sm'>{SelectedAddress.recap}</p>
                     <p>Telp:{SelectedAddress.notelp}</p>
                   </div>
                   <div>
