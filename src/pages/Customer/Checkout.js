@@ -189,7 +189,7 @@ export const Checkout = () => {
                 <h3 className='text-lg capitalize font-bold'>
                   {Cart.seller.name}
                 </h3>
-                <h5>{Cart.seller.address.recap}</h5>
+                <h5>{Cart.seller?.address?.recap}</h5>
                 <Card>
                   {Cart?.cartItems?.map((product) => (
                     <div key={product.id}>
