@@ -85,13 +85,14 @@ function App() {
               exact
               path={RouteName.sellerLogin}
               component={LoginSeller}
+              z
             />
             <Route
               exact
               path={RouteName.sellerRegister}
               component={RegisterSeller}
             />
-            <Route
+            <SellerRoute
               exact
               path={"/seller/order-info"}
               component={OrderInfo}

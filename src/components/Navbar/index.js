@@ -42,6 +42,7 @@ export default function Navbar() {
   const sellerNavigation = [
     { name: "Dashboard", href: "/seller/dashboard" },
     { name: "Your Profile", href: "/seller/edit-profile" },
+    { name: "Order Info", href: "/seller/order-info" },
     { name: "Sign out", href: "#", onClick: logout },
   ];
 
