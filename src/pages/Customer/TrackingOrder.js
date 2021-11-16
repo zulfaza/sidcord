@@ -25,7 +25,7 @@ export default function TrackingOrder() {
   function handlePaymentDetail(orderId) {
     setIsOpen(true);
     Api.get(`/payments/${orderId}`).then((res) => {
-      setPaymentData(JSON.parse(res.data.data));
+      if (res.data) setPaymentData(JSON.parse(res.data.data));
     });
   }
 
