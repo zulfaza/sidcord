@@ -14,9 +14,9 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth();
 export const storage = getStorage(app);
 
-// if (window.location.hostname === "localhost") {
-//   connectAuthEmulator(auth, "http://localhost:9099");
-//   connectStorageEmulator(storage, "localhost", 9199);
-// }
+if (window.location.hostname === "localhost") {
+  connectAuthEmulator(auth, "http://localhost:9099");
+  connectStorageEmulator(storage, "localhost", 9199);
+}
 
 export default app;
